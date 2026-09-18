@@ -28,6 +28,10 @@ namespace ModernFlyouts.Core.Interop
         /// </summary>
         /// <param name="state">Wnf Id</param>
         /// <returns>Wnf State Data</returns>
+        private const int STATUS_SUCCESS = 0;
+
+        private const int STATUS_BUFFER_TOO_SMALL = unchecked((int)0xC0000023);
+
         public static WnfStateData QueryWnf(ulong state)
         {
             var data = new WnfStateData();
@@ -37,13 +41,26 @@ namespace ModernFlyouts.Core.Interop
             {
                 using (SafeHGlobalBuffer buffer = new SafeHGlobalBuffer(size))
                 {
-                    int status;
-                    status = ZwQueryWnfStateData(ref state, null, IntPtr.Zero, out uint changestamp, buffer, ref size);
+                    int status = ZwQueryWnfStateData(ref state, null, IntPtr.Zero, out uint changestamp, buffer, ref size);
 
-                    if (status == 0xC0000023)
+                    // STATUS_BUFFER_TOO_SMALL. The literal 0xC0000023 is a uint, so comparing it against
+                    // an int status was always false (the compiler flags this as CS0652) and the retry
+                    // never ran - the undersized buffer was then read as though the call had succeeded.
+                    // On this status the kernel has written the required length into 'size'.
+                    if (status == STATUS_BUFFER_TOO_SMALL)
+                    {
                         continue;
+                    }
+
+                    // Anything else that is not success leaves the buffer uninitialised, so don't read it.
+                    if (status != STATUS_SUCCESS)
+                    {
+                        break;
+                    }
+
                     buffer.SetLength(size);
                     data = new WnfStateData(changestamp, buffer.ReadBytes(size));
+                    break;
                 }
             }
             return data;
