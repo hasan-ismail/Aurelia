@@ -30,10 +30,10 @@ jobs:
             platform: arm64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '9.0.x'
 
@@ -57,7 +57,7 @@ jobs:
           Compress-Archive -Path publish/${{ matrix.rid }}/* `
                            -DestinationPath artifacts/ModernFlyouts-portable-${{ matrix.rid }}.zip
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ModernFlyouts-portable-${{ matrix.rid }}
           path: artifacts/*.zip
@@ -69,7 +69,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: artifacts
           merge-multiple: true
