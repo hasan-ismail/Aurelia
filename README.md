@@ -2,6 +2,29 @@
 
 #### An open source, modern, **Fluent Design-based** set of flyouts for Windows.
 
+---
+
+> ### 🔧 About this fork
+>
+> Upstream [ModernFlyouts-Community/ModernFlyouts](https://github.com/ModernFlyouts-Community/ModernFlyouts)
+> is no longer actively maintained. This fork exists to keep the app working on current Windows 11
+> builds and, above all, to make it **installable again**.
+>
+> **Install it:** grab `ModernFlyouts-portable-win-x64.zip` (or `win-arm64`) from
+> [Releases](../../releases), unzip it anywhere, and run `ModernFlyouts.exe`.
+> No MSIX, **no certificate to install**, and no separate .NET download - the build is self-contained.
+>
+> The upstream MSIX bundle was signed with a certificate that has since expired, which is why so many
+> people could no longer install the app at all
+> ([#1507](https://github.com/ModernFlyouts-Community/ModernFlyouts/issues/1507),
+> [#1494](https://github.com/ModernFlyouts-Community/ModernFlyouts/issues/1494),
+> [#1471](https://github.com/ModernFlyouts-Community/ModernFlyouts/issues/1471)).
+> A portable build sidesteps signing entirely.
+>
+> See **[FORK_CHANGES.md](FORK_CHANGES.md)** for the full list of fixes.
+
+---
+
 [![Microsoft Store](https://img.shields.io/badge/Microsoft-Store-blue?style=flat&logo=microsoft)](https://www.microsoft.com/store/apps/9MT60QV066RP?ocid=badge)
 [![Github All Releases](https://img.shields.io/github/downloads/ModernFlyouts-Community/ModernFlyouts/total.svg?style=flat&logo=github)](https://github.com/ModernFlyouts-Community/ModernFlyouts/releases)
 [![GitHub release](https://img.shields.io/github/release/ModernFlyouts-Community/ModernFlyouts.svg?style=flat&logo=github)](https://github.com/ModernFlyouts-Community/ModernFlyouts/releases)
