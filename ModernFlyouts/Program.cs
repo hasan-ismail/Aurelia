@@ -18,10 +18,9 @@ namespace ModernFlyouts
             Thread thread = new(() => {
                 AppLifecycleManager.StartApplication(args, () =>
                 {
-#if RELEASE
-                    Microsoft.AppCenter.AppCenter.Start("26393d67-ab03-4e26-a6db-aa76bf989c21",
-                        typeof(Microsoft.AppCenter.Analytics.Analytics), typeof(Microsoft.AppCenter.Crashes.Crashes));
-#endif
+                    // Visual Studio App Center, which release builds used to report analytics and
+                    // crashes to, was retired by Microsoft on 31 March 2025. Starting it only cost a
+                    // failed network round-trip on every launch, so the SDK has been removed entirely.
                     InitializePrivateUseClasses();
 
                     AppDataMigration.Perform();

@@ -30,15 +30,8 @@
     <PackageReference Include="ModernWpf.Toolkit.UI.Controls" Version="0.1.0" />
     <PackageReference Include="ModernWpfUI" Version="0.9.6" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.0-rc.2.24474.1" />
-    <PackageReference Include="System.Management" Version="9.0.0-rc.2.24473.5" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Microsoft.AppCenter" Version="5.0.6" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.6" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.6" />
-    <PackageReference Include="Microsoft.Services.Store.SDK" Version="10.1705.16001" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+    <PackageReference Include="System.Management" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
