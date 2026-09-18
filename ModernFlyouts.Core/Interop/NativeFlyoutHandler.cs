@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ModernFlyouts.Core.Helpers;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
@@ -225,7 +226,7 @@ namespace ModernFlyouts.Core.Interop
 
             if (!_hasNativeFlyoutCreated && (eventType == EVENT_OBJECT_CREATE || eventType == EVENT_OBJECT_SHOW))
             {
-                if (GetWindowClassName(hWnd) == "NativeHWNDHost")
+                if (GetWindowClassName(hWnd) == NativeFlyoutHostClass)
                 {
                     _hasNativeFlyoutCreated = GetAllInfos();
                     if (_hasNativeFlyoutCreated && hWnd == HWndHost)
@@ -340,29 +341,36 @@ namespace ModernFlyouts.Core.Interop
             return id == pid;
         }
 
+        /// <summary>
+        /// Windows 11 22H2 (build 22621) re-implemented the volume/brightness OSD on top of XAML islands,
+        /// which renamed both the host window and its content window. Windows 11 24H2 and 25H2 kept that
+        /// same shape, so the 22H2 layout is still the correct one on current builds.
+        /// </summary>
+        /// <remarks>
+        /// These names are resolved once and shared by every lookup. They used to be duplicated inline,
+        /// which is how <see cref="WinEventProc"/> ended up still matching the pre-22H2 host class and
+        /// never re-detecting the OSD on Windows 11.
+        /// </remarks>
+        private static readonly bool UsesXamlIslandFlyout = OSVersionHelper.Build >= 22621;
+
+        internal static string NativeFlyoutHostClass
+            => UsesXamlIslandFlyout ? "XamlExplorerHostIslandWindow" : "NativeHWNDHost";
+
+        private static string NativeFlyoutContentClass
+            => UsesXamlIslandFlyout ? "Windows.UI.Composition.DesktopWindowContentBridge" : "DirectUIHWND";
+
+        private static string NativeFlyoutContentName
+            => UsesXamlIslandFlyout ? "DesktopWindowXamlSource" : null;
+
         private bool GetAllInfos()
         {
             IntPtr hWndHost = IntPtr.Zero;
             IntPtr hWndDUI = IntPtr.Zero;
 
-            String build = RuntimeInformation.OSDescription.Substring(RuntimeInformation.OSDescription.LastIndexOf('.') + 1);
-            int buildNumber = int.Parse(build);
-
-            String outerClass = "";
-            String outerName = "";
-            String innerClass = "";
-            String innerName = "";
-            if (buildNumber >= 22620) // 22H2 changes the OSD
-            {
-                outerClass = "XamlExplorerHostIslandWindow";
-                innerClass = "Windows.UI.Composition.DesktopWindowContentBridge";
-                innerName = "DesktopWindowXamlSource";
-            }
-            else
-            {
-                outerClass = "NativeHWNDHost";
-                innerClass = "DirectUIHWND";
-            }
+            string outerClass = NativeFlyoutHostClass;
+            string outerName = null;
+            string innerClass = NativeFlyoutContentClass;
+            string innerName = NativeFlyoutContentName;
 
             while ((hWndHost = FindWindowEx(IntPtr.Zero, hWndHost, outerClass, outerName)) != IntPtr.Zero)
             {
