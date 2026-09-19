@@ -42,6 +42,10 @@
                 <Grid>
                     <Border Background="{DynamicResource FlyoutBackground}"
                             CornerRadius="{DynamicResource FlyoutCornerRadius}"/>
+                    <Border Background="{DynamicResource FlyoutGlassSheenBrush}"
+                            CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <StackPanel>
                         <ContentControl x:Name="TopBarHost" x:FieldModifier="private" />
                         <controls:CrossFadeContentControl Content="{Binding PrimaryContent}" />
@@ -50,6 +54,10 @@
                         BorderThickness="{DynamicResource FlyoutBorderThemeThickness}"
                         BorderBrush="{DynamicResource FlyoutBorderThemeBrush}"
                         CornerRadius="{DynamicResource FlyoutCornerRadius}" />
+                    <Border BorderThickness="1" BorderBrush="{DynamicResource FlyoutGlassRimBrush}"
+                            CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </Grid>
                 <!--<Border Background="{DynamicResource FlyoutBackground}"
                     BorderThickness="{DynamicResource FlyoutBorderThemeThickness}"
@@ -65,11 +73,19 @@
                 <Grid>
                     <Border Background="{DynamicResource FlyoutBackground}"
                             CornerRadius="{DynamicResource FlyoutCornerRadius}"/>
+                    <Border Background="{DynamicResource FlyoutGlassSheenBrush}"
+                            CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <controls:CrossFadeContentControl Content="{Binding SecondaryContent}" />
                     <Border
                         BorderThickness="{DynamicResource FlyoutBorderThemeThickness}"
                         BorderBrush="{DynamicResource FlyoutBorderThemeBrush}"
                         CornerRadius="{DynamicResource FlyoutCornerRadius}" />
+                    <Border BorderThickness="1" BorderBrush="{DynamicResource FlyoutGlassRimBrush}"
+                            CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </Grid>
             </ui:ThemeShadowChrome>
         </controls:DirectableStackPanel>

@@ -78,6 +78,18 @@ namespace ModernFlyouts.Helpers
 
         public const double FlyoutBackgroundOpacity = 100.0;
 
+        /// <summary>
+        /// Glass is on by default where the compositor can blur (Windows 10 1803+); the flyout
+        /// falls back to a solid surface automatically everywhere else.
+        /// </summary>
+        public const bool FlyoutGlassEffectEnabled = true;
+
+        /// <summary>
+        /// How opaque the flyout stays when glass is on. Below roughly 0.6 the text starts to
+        /// struggle against a busy wallpaper.
+        /// </summary>
+        public const double FlyoutGlassOpacityFactor = 0.80;
+
         public const bool TrayIconEnabled = true;
 
         public const bool UseColoredTrayIcon = true;

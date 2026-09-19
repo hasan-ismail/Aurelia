@@ -335,6 +335,12 @@
   <data name="Settings.FlyoutBackgroundOpacity" xml:space="preserve">
     <value>Flyout background opacity</value>
   </data>
+  <data name="Settings.FlyoutGlassEffect" xml:space="preserve">
+    <value>Glass effect</value>
+  </data>
+  <data name="Settings.FlyoutGlassEffectDescription" xml:space="preserve">
+    <value>Blur the desktop behind the flyout and make it translucent</value>
+  </data>
   <data name="Settings.FlyoutDefaultPosition" xml:space="preserve">
     <value>Flyout default position</value>
   </data>

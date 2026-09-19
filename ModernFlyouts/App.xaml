@@ -32,6 +32,22 @@
                 <ResourceDictionary Source="Styles/ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- Glass sheen: a soft specular wash across the top of a card, plus a brighter
+                 rim along its top edge. Together these read as a lit glass surface instead of a
+                 flat translucent rectangle. Both are subtle by design - strong enough to catch
+                 the eye at a glance, weak enough not to fight the content. -->
+            <LinearGradientBrush x:Key="FlyoutGlassSheenBrush" StartPoint="0,0" EndPoint="0.35,1">
+                <GradientStop Color="#26FFFFFF" Offset="0" />
+                <GradientStop Color="#0DFFFFFF" Offset="0.35" />
+                <GradientStop Color="#00FFFFFF" Offset="0.75" />
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="FlyoutGlassRimBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#40FFFFFF" Offset="0" />
+                <GradientStop Color="#14FFFFFF" Offset="0.5" />
+                <GradientStop Color="#0AFFFFFF" Offset="1" />
+            </LinearGradientBrush>
+
             <converters:IndexToVisibilityConverter x:Key="IndexToVisibilityConverter" />
             <converters:TextToTooltipEnabledConverter x:Key="TextToTooltipEnabledConverter" />
             <converters:ScrollButtonVisibilityConverter x:Key="ScrollButtonVisibilityConverter" />

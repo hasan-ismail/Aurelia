@@ -38,6 +38,15 @@
                             <Run Text="{Binding Path=UIManager.FlyoutBackgroundOpacity, StringFormat={}{0:#0}%}" />
                         </TextBlock>
                     </ui:SimpleStackPanel>
+                    <ui:ToggleSwitch Header="{x:Static resx:Strings.Settings_FlyoutGlassEffect}"
+                                     IsOn="{Binding UIManager.FlyoutGlassEffectEnabled}"
+                                     OnContent="{x:Static resx:Strings.Settings_On}"
+                                     OffContent="{x:Static resx:Strings.Settings_Off}"
+                                     Visibility="{Binding UIManager.IsGlassEffectSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock Style="{DynamicResource CaptionTextBlockStyle}"
+                               Opacity="0.7" Margin="0,-6,0,0" TextWrapping="Wrap"
+                               Text="{x:Static resx:Strings.Settings_FlyoutGlassEffectDescription}"
+                               Visibility="{Binding UIManager.IsGlassEffectSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <ui:ToggleSwitch Header="{x:Static resx:Strings.Settings_TrayIconEnabled}"
                                      IsOn="{Binding UIManager.TrayIconEnabled}"
                                      OnContent="{x:Static resx:Strings.Settings_On}"

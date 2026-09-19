@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ModernFlyouts.Controls;
 using ModernFlyouts.Core.UI;
+using ModernFlyouts.Core.Interop;
 using ModernFlyouts.Helpers;
 using ModernWpf;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -120,6 +122,29 @@ namespace ModernFlyouts.UI
                 }
             }
         }
+
+        private bool flyoutGlassEffectEnabled = DefaultValuesStore.FlyoutGlassEffectEnabled;
+
+        /// <summary>
+        /// Whether the flyout is drawn as translucent glass over a blurred desktop, rather than
+        /// as a plain opaque surface.
+        /// </summary>
+        public bool FlyoutGlassEffectEnabled
+        {
+            get => flyoutGlassEffectEnabled;
+            set
+            {
+                if (SetProperty(ref flyoutGlassEffectEnabled, value))
+                {
+                    OnFlyoutGlassEffectEnabledChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The glass surface is rendered by WPF, so it works on every supported Windows version.
+        /// </summary>
+        public bool IsGlassEffectSupported => true;
 
         private bool trayIconEnabled = DefaultValuesStore.TrayIconEnabled;
 
@@ -337,6 +362,7 @@ namespace ModernFlyouts.UI
             lightResources = themeResources.ThemeDictionaries["Light"];
             darkResources = themeResources.ThemeDictionaries["Dark"];
 
+            FlyoutGlassEffectEnabled = AppDataHelper.FlyoutGlassEffectEnabled;
             FlyoutBackgroundOpacity = AppDataHelper.FlyoutBackgroundOpacity;
 
             TrayIconManager.SetupTrayIcon();
@@ -412,8 +438,56 @@ namespace ModernFlyouts.UI
             var themeResource = actualFlyoutTheme == ElementTheme.Light ? lightResources : darkResources;
             var brush = themeResource["FlyoutBackground"] as Brush;
             brush = brush.Clone();
-            brush.Opacity = flyoutBackgroundOpacity * 0.01;
+
+            // With glass on, the surface has to let the blurred backdrop through, so the user's
+            // opacity is scaled down rather than replaced - someone who picked 60% still gets a
+            // thinner surface than someone who picked 100%.
+            double opacity = flyoutBackgroundOpacity * 0.01;
+
+            if (IsGlassEffectActive)
+            {
+                opacity *= DefaultValuesStore.FlyoutGlassOpacityFactor;
+            }
+
+            brush.Opacity = opacity;
             themeResource["FlyoutBackground"] = brush;
+        }
+
+        /// <summary>Glass is drawn purely in XAML, so there is nothing extra to feature-detect.</summary>
+        private bool IsGlassEffectActive => flyoutGlassEffectEnabled;
+
+        private void OnFlyoutGlassEffectEnabledChanged()
+        {
+            AppDataHelper.FlyoutGlassEffectEnabled = flyoutGlassEffectEnabled;
+
+            UpdateFlyoutBackgroundOpacity();
+            UpdateFlyoutBackdrop();
+        }
+
+        /// <summary>
+        /// Pushes the current material onto the flyout window itself. Safe to call before the
+        /// window exists - it is re-applied once the handle is created.
+        /// </summary>
+        public void UpdateFlyoutBackdrop()
+        {
+            var window = FlyoutHandler.Instance?.OnScreenFlyoutWindow;
+
+            if (window == null || window.Handle == IntPtr.Zero)
+            {
+                return;
+            }
+
+            // Deliberately NOT using the compositor's acrylic blur here.
+            //
+            // The accent-policy blur applies to the whole window rectangle, and this window is
+            // considerably larger than the cards you actually see - the extra space is the
+            // transparent margin the drop shadow needs. Enabling it turned that margin into a
+            // dark blurred halo around the flyout and hid the wallpaper the user could otherwise
+            // see between and around the cards, which looked worse than no effect at all.
+            //
+            // The glass is therefore rendered in XAML instead (a translucent surface plus a
+            // specular sheen and rim), which clips correctly to each card's rounded rectangle.
+            WindowBackdrop.ApplyRoundedCorners(window.Handle);
         }
 
         private void UpdateTrayIcon()

@@ -871,6 +871,24 @@ namespace ModernFlyouts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Glass effect.
+        /// </summary>
+        public static string Settings_FlyoutGlassEffect {
+            get {
+                return ResourceManager.GetString("Settings.FlyoutGlassEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blur the desktop behind the flyout and make it translucent.
+        /// </summary>
+        public static string Settings_FlyoutGlassEffectDescription {
+            get {
+                return ResourceManager.GetString("Settings.FlyoutGlassEffectDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flyout content stacking direction.
         /// </summary>
         public static string Settings_FlyoutContentStackingDirection {
