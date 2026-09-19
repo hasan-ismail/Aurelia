@@ -16,6 +16,8 @@ across it.
 Your built-in flyout isn't modified. It's hidden while Aurelia is running, and Windows goes straight
 back to normal when you quit.
 
+![Aurelia](docs/images/themes/vapor.png)
+
 ## Install
 
 Download the latest build from the [Releases page](https://github.com/hasan-ismail/Aurelia/releases/latest).
@@ -41,6 +43,21 @@ setting an accent colour, how solid the glass is, how round the corners are, and
 A theme is a starting point, not a cage. Pick one, then change anything you like: accent colour by
 swatch or hex, glass opacity, corner roundness, light or dark. The moment you adjust something it
 simply reads as Custom.
+
+| | | |
+|:-:|:-:|:-:|
+| **Classic** | **Frost** | **Midnight** |
+| ![Classic](docs/images/themes/classic.png) | ![Frost](docs/images/themes/frost.png) | ![Midnight](docs/images/themes/midnight.png) |
+| **Aurora** | **Ember** | **Nord** |
+| ![Aurora](docs/images/themes/aurora.png) | ![Ember](docs/images/themes/ember.png) | ![Nord](docs/images/themes/nord.png) |
+| **Rose** | **Vapor** | **Mono** |
+| ![Rose](docs/images/themes/rose.png) | ![Vapor](docs/images/themes/vapor.png) | ![Mono](docs/images/themes/mono.png) |
+
+Pick a theme, then tune it — or ignore the presets entirely and set the accent by hex:
+
+| Themes | Colours and glass |
+|:-:|:-:|
+| ![Theme picker](docs/images/settings-themes.png) | ![Colour settings](docs/images/settings-colours.png) |
 
 ## Features
 
@@ -70,6 +87,16 @@ simply reads as Custom.
 - Start with Windows, optional
 - Animations honour the Windows "Show animations" accessibility setting
 - Translated into 30+ languages
+
+Lock keys get their own compact flyout:
+
+![Lock keys](docs/images/lockkeys.png)
+
+Everything is configurable, per module:
+
+| General | Layout |
+|:-:|:-:|
+| ![General settings](docs/images/settings-general.png) | ![Layout settings](docs/images/settings-layout.png) |
 
 Media controls depend on what the playing app reports to Windows. See
 [which players support what](docs/GSMTC-Support-And-Popular-Apps.md).

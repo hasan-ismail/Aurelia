@@ -21,8 +21,13 @@ namespace Aurelia.Controls
         private Storyboard collapseStoryboard;
 
         private bool _topBarOverlay;
-        private bool _topBarVisible = true;
-        private TopBarVisibility _topBarVisibility = TopBarVisibility.Visible;
+
+        // Seeded from the same constant as the dependency property's default. If these disagree
+        // with it, the change callback never fires for a value that already equals the default and
+        // the bar renders in the wrong state - which is exactly what happened when the default
+        // became Collapsed.
+        private bool _topBarVisible = DefaultValuesStore.DefaultTopBarVisibility == TopBarVisibility.Visible;
+        private TopBarVisibility _topBarVisibility = DefaultValuesStore.DefaultTopBarVisibility;
 
         private bool isAnimating;
 
@@ -64,6 +69,11 @@ namespace Aurelia.Controls
 
             BindingOperations.SetBinding(this, TopBarVisibilityProperty,
                 new Binding(nameof(UIManager.TopBarVisibility)) { Source = FlyoutHandler.Instance.UIManager, Mode = BindingMode.OneWay });
+
+            // Apply whatever the binding settled on. Binding a value equal to the property's
+            // default raises no change notification, so without this the initial visual state
+            // would never be applied at all.
+            OnTopBarVisibilityChanged(TopBarVisibility);
         }
 
         private void OnMouseEnter()

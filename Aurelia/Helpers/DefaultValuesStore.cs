@@ -66,7 +66,11 @@ namespace Aurelia.Helpers
 
         #region UI
 
-        public const TopBarVisibility DefaultTopBarVisibility = TopBarVisibility.Visible;
+        /// <summary>
+        /// Collapsed by default: the top bar is a settings/pin/close strip, and the flyout reads as
+        /// a cleaner object without it. It is still one setting away for anyone who wants it.
+        /// </summary>
+        public const TopBarVisibility DefaultTopBarVisibility = TopBarVisibility.Collapsed;
 
         public const ElementTheme AppTheme = ElementTheme.Default;
 
