@@ -21,6 +21,10 @@ namespace ModernFlyouts
                     // Visual Studio App Center, which release builds used to report analytics and
                     // crashes to, was retired by Microsoft on 31 March 2025. Starting it only cost a
                     // failed network round-trip on every launch, so the SDK has been removed entirely.
+                    // PrepareToDie covers the orderly exits; this catches the rest so a
+                    // debounced settings write is never silently dropped.
+                    AppDomain.CurrentDomain.ProcessExit += (_, _) => Helpers.SettingsStore.Flush();
+
                     InitializePrivateUseClasses();
 
                     AppDataMigration.Perform();

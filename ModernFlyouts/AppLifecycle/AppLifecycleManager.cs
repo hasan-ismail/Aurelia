@@ -128,6 +128,10 @@ namespace ModernFlyouts.AppLifecycle
         /// </remarks>
         public static void PrepareToDie()
         {
+            // Settings writes are debounced, so make sure anything still pending reaches disk
+            // before the process goes away.
+            Helpers.SettingsStore.Flush();
+
             mutex.ReleaseMutex();
             mutex.Dispose();
         }

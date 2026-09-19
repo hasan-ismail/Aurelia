@@ -20,10 +20,8 @@ namespace ModernFlyouts.Helpers
         {
             try
             {
-                if (ApplicationData.Current.LocalSettings.Values.ContainsKey(propertyName))
+                if (SettingsStore.TryGetValue(propertyName, out string value))
                 {
-                    string value = ApplicationData.Current.LocalSettings.Values[propertyName].ToString() ?? string.Empty;
-
                     if (!string.IsNullOrEmpty(value))
                     {
                         if (typeof(T) == typeof(string))
@@ -74,7 +72,7 @@ namespace ModernFlyouts.Helpers
         {
             try
             {
-                ApplicationData.Current.LocalSettings.Values[propertyName] = value.ToString();
+                SettingsStore.SetValue(propertyName, value?.ToString());
             }
             catch { }
         }
@@ -83,7 +81,12 @@ namespace ModernFlyouts.Helpers
         {
             try
             {
-                await ApplicationData.Current.ClearAsync();
+                SettingsStore.Clear();
+
+                if (StartupHelper.IsPackaged)
+                {
+                    await ApplicationData.Current.ClearAsync();
+                }
             }
             catch { }
         }
@@ -92,7 +95,7 @@ namespace ModernFlyouts.Helpers
         {
             try
             {
-                ApplicationData.Current.LocalSettings.Values[propertyName] = value;
+                SettingsStore.SetValue(propertyName, value);
             }
             catch { }
         }
@@ -274,6 +277,12 @@ namespace ModernFlyouts.Helpers
         public static double FlyoutBackgroundOpacity
         {
             get => GetValue(DefaultValuesStore.FlyoutBackgroundOpacity);
+            set => SetValue(value);
+        }
+
+        public static bool FlyoutGlassEffectEnabled
+        {
+            get => GetValue(DefaultValuesStore.FlyoutGlassEffectEnabled);
             set => SetValue(value);
         }
 
