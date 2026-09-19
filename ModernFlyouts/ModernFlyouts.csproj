@@ -13,6 +13,13 @@
     <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
     <LangVersion>preview</LangVersion>
+
+    <!-- Hand freed segments back to the OS rather than retaining them; this is a tray app
+         that idles most of the time. Background GC is deliberately left ON: turning it off
+         made no measurable difference to the footprint here, and a blocking gen2 collection
+         would risk a visible hitch in a flyout that has to appear within ~50ms. -->
+    <RetainVMGarbageCollection>false</RetainVMGarbageCollection>
+    <TieredPGO>true</TieredPGO>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Version.Contains('-beta'))">
