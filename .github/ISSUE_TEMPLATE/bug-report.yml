@@ -8,7 +8,7 @@ body:
   attributes:
     value: |
       Thanks for taking the time to fill out this bug!
-      Please make sure to [search for existing issues](https://github.com/ModernFlyouts-Community/ModernFlyouts/issues) before filing a new one!
+      Please make sure to [search for existing issues](https://github.com/hasan-ismail/ModernFlyouts/issues) before filing a new one!
       ***Please create issues in English***, (use google translate if required)
 - type: input
   attributes:

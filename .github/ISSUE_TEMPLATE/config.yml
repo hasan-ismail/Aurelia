@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: "\U0001F4DA ModernFlyouts user documentation"
-    url: https://modernflyouts-community.github.io/docs/#/
-    about: Documentation for users of ModernFlyouts
-  - name: "\U0001F4DA ModernFlyouts dev documentation"
-    url: https://modernflyouts-community.github.io/docs/#/
-    about: Documentation for people interested in developing and contributing for ModernFlyouts
+  - name: "\U0001F4E6 Download the latest build"
+    url: https://github.com/hasan-ismail/ModernFlyouts/releases/latest
+    about: Installer and portable builds. Please check you are on the latest version before reporting a bug.
+  - name: "\U0001F527 What changed in this fork"
+    url: https://github.com/hasan-ismail/ModernFlyouts/blob/main/FORK_CHANGES.md
+    about: The list of fixes and changes made since the original project stopped being maintained.

@@ -23,15 +23,13 @@
                 </Bold>
             </TextBlock>
             <ui:HyperlinkButton Content="{x:Static resx:Strings.About_GitHub}"
-                                NavigateUri="https://github.com/ModernFlyouts-Community/ModernFlyouts" />
+                                NavigateUri="https://github.com/hasan-ismail/ModernFlyouts" />
             <ui:HyperlinkButton Content="{x:Static resx:Strings.About_Contributors}"
-                                NavigateUri="https://github.com/ModernFlyouts-Community/ModernFlyouts/graphs/contributors" />
+                                NavigateUri="https://github.com/hasan-ismail/ModernFlyouts/graphs/contributors" />
             <ui:HyperlinkButton Content="{x:Static resx:Strings.About_Dependencies}"
-                                NavigateUri="https://github.com/ModernFlyouts-Community/ModernFlyouts/network/dependencies" />
+                                NavigateUri="https://github.com/hasan-ismail/ModernFlyouts/network/dependencies" />
             <ui:HyperlinkButton Content="{x:Static resx:Strings.About_OpenNewIssue}"
-                                NavigateUri="https://github.com/ModernFlyouts-Community/ModernFlyouts/issues/new/choose" />
-            <Button Style="{DynamicResource ButtonRevealStyle}"
-                    Content="{x:Static resx:Strings.About_RateAndReview}" Click="RateAndReviewButton_Click" />
+                                NavigateUri="https://github.com/hasan-ismail/ModernFlyouts/issues/new/choose" />
         </ui:SimpleStackPanel>
     </controls:ScrollViewerEx>
 </Page>

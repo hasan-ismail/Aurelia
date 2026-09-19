@@ -1,9 +1,13 @@
 # Builds ModernFlyouts as a portable, self-contained app.
 #
-# The upstream project shipped only an MSIX bundle, which has to be signed. When that signing
+# The original project shipped only an MSIX bundle, which has to be signed. When that signing
 # certificate expired users could no longer install the app at all, and there was no other download
-# (see upstream issues #1507, #1494, #1471). The artifacts produced here are plain folders in a zip:
-# no certificate, no MSIX, no .NET install required - unzip and run ModernFlyouts.exe.
+# (see upstream issues #1507, #1494, #1471).
+#
+# This produces two unsigned, self-contained artifacts per architecture, neither of which needs a
+# certificate or a .NET install:
+#   * ModernFlyouts-Setup-<arch>.exe      - a per-user Inno Setup installer
+#   * ModernFlyouts-portable-<rid>.zip    - unzip and run
 name: Build
 
 on:
@@ -50,17 +54,46 @@ jobs:
           -p:Platform=${{ matrix.platform }}
           -o publish/${{ matrix.rid }}
 
-      - name: Package
+      - name: Package portable zip
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force artifacts | Out-Null
           Compress-Archive -Path publish/${{ matrix.rid }}/* `
                            -DestinationPath artifacts/ModernFlyouts-portable-${{ matrix.rid }}.zip
 
+      - name: Read version
+        id: version
+        shell: pwsh
+        run: |
+          # Tag builds are versioned from the tag; everything else uses Directory.Build.props.
+          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+            $v = $env:GITHUB_REF_NAME -replace '^v',''
+          } else {
+            $v = ([xml](Get-Content Directory.Build.props)).Project.PropertyGroup.Version
+          }
+          # Inno Setup's VersionInfoVersion wants plain numerics, so drop any -beta suffix.
+          $v = ($v -split '-')[0]
+          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "version=$v"
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress
+          }
+          if (-not (Test-Path $iscc)) { throw "Inno Setup compiler not found at $iscc" }
+          & $iscc /DAppVersion=${{ steps.version.outputs.version }} `
+                  /DArch=${{ matrix.platform }} `
+                  /DPayloadDir=..\publish\${{ matrix.rid }} `
+                  installer\ModernFlyouts.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with $LASTEXITCODE" }
+
       - uses: actions/upload-artifact@v7
         with:
-          name: ModernFlyouts-portable-${{ matrix.rid }}
-          path: artifacts/*.zip
+          name: ModernFlyouts-${{ matrix.rid }}
+          path: artifacts/*
           if-no-files-found: error
 
   release:
@@ -78,7 +111,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" artifacts/*.zip \
+          gh release create "${GITHUB_REF_NAME}" artifacts/*.zip artifacts/*.exe \
             --repo "${GITHUB_REPOSITORY}" \
             --title "${GITHUB_REF_NAME}" \
             --generate-notes

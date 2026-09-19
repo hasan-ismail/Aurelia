@@ -1,7 +1,10 @@
-Privacy Policy
+# Privacy Policy
 
-Personal Information Collection: ModernFlyouts does not collect, store, share or publish any personal information.
+ModernFlyouts does not collect, store, share or publish any information.
 
-Non-personal Information Collection:
+There is no analytics, no crash reporting and no telemetry of any kind. The app makes no network
+requests. Your settings are stored locally on your own machine and never leave it.
 
-We use App Center to keep track of app usage, find bugs, and fix crashes. All information sent to App Center is anonymous and free of any user or contextual data.
+> Earlier versions of the original project sent anonymous usage and crash data to Visual Studio App
+> Center. Microsoft retired that service on 31 March 2025, and the SDK has been removed from this
+> fork entirely.

@@ -6,62 +6,79 @@ A modern, Fluent Design replacement for the Windows volume, brightness, media an
 
 [![Build](https://github.com/hasan-ismail/ModernFlyouts/actions/workflows/build.yml/badge.svg)](https://github.com/hasan-ismail/ModernFlyouts/actions/workflows/build.yml)
 [![Release](https://img.shields.io/github/v/release/hasan-ismail/ModernFlyouts?logo=github)](https://github.com/hasan-ismail/ModernFlyouts/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/hasan-ismail/ModernFlyouts/total?logo=github)](https://github.com/hasan-ismail/ModernFlyouts/releases)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ![Overview](docs/images/Overview.png)
 
 Press a volume, media or brightness key and Windows shows a small on-screen popup. ModernFlyouts
-replaces it with a nicer one that also gives you media controls, a proper volume slider, per-monitor
+replaces it with a much better one — real media controls, a proper volume slider, per-monitor
 brightness, and flyouts for the lock keys.
 
-Your built-in flyout isn't modified — it's just hidden while ModernFlyouts is running. Quit the app
-and Windows goes back to normal.
+Your built-in flyout isn't modified. It's hidden while ModernFlyouts is running, and Windows goes
+straight back to normal when you quit.
 
-## Download
+> **This is an actively maintained continuation of the project.** The original stopped receiving
+> updates and its last release could no longer even be installed — its signing certificate had
+> expired. This version is rebuilt on .NET 9, fixes the detection that broke on recent Windows 11
+> builds, and ships a normal installer. See [what's changed](FORK_CHANGES.md).
 
-Grab the latest zip from the [Releases page](https://github.com/hasan-ismail/ModernFlyouts/releases/latest):
+## Install
 
-| Your PC | File |
+Download the latest build from the [Releases page](https://github.com/hasan-ismail/ModernFlyouts/releases/latest).
+
+| | |
 | --- | --- |
-| Most PCs (Intel/AMD) | `ModernFlyouts-portable-win-x64.zip` |
-| ARM devices (Surface Pro X, Snapdragon laptops) | `ModernFlyouts-portable-win-arm64.zip` |
+| **Installer** (recommended) | `ModernFlyouts-Setup-x64.exe` — installs, adds a Start Menu entry, optional start-with-Windows, and uninstalls cleanly |
+| **Portable** | `ModernFlyouts-portable-win-x64.zip` — unzip and run, nothing is written outside the folder |
+| **ARM devices** | Use the `arm64` build (Surface Pro X, Snapdragon laptops) |
 
-Unzip it anywhere and run **`ModernFlyouts.exe`**. That's it — nothing to install, no certificate to
-trust, and no .NET download.
+No certificate to install, and no separate .NET download — the runtime is bundled.
 
-The app sits in your system tray. Double-click the icon to open settings, or right-click it for
-Settings and Exit. To launch it automatically with Windows, turn on **Run at startup** in the
-General settings page.
+The app runs in your system tray. Double-click the icon for settings, or right-click for Settings
+and Exit.
 
 **Requires Windows 10 1809 or newer, or Windows 11.**
 
 ## Features
 
-- Volume flyout with a real slider, plus media controls (play/pause, next/previous, shuffle, repeat, stop, timeline)
-- Brightness flyout, with per-monitor control on multi-monitor setups
-- Airplane-mode flyout
-- Lock-key flyouts — Caps Lock, Num Lock, Scroll Lock and Insert/Overtype
-- Light and dark themes
-- Drag the flyout anywhere; it remembers where you put it
-- Pick which monitor it appears on
-- Adjustable opacity, timeout and layout
-- Every module can be turned off individually
+**Flyouts**
 
-Media controls depend on what the app you're playing from reports to Windows. See
+- **Volume** — a real slider, click the icon to mute, scroll the slider to adjust
+- **Media** — play/pause, next/previous, shuffle, repeat, stop, and a seekable timeline
+- **Brightness** — per-monitor on multi-monitor setups, including external displays over DDC/CI
+- **Airplane mode**
+- **Lock keys** — Caps Lock, Num Lock, Scroll Lock and Insert/Overtype
+
+**Appearance**
+
+- Light and dark themes, following Windows or pinned to one
+- Adjustable background opacity
+- Smooth open/close animations, which can be turned off
+- Drag the flyout anywhere — it remembers where you put it
+- Choose which monitor it shows on, or place it manually
+- Configurable timeout, alignment, and content stacking direction
+- Show, hide or pin the flyout's top bar; optional coloured tray icon
+
+**Behaviour**
+
+- Every module can be turned off individually — use just the ones you want
+- Or turn the whole thing off and get the Windows flyouts back, without uninstalling
+- Start with Windows, optional
+- Translated into 30+ languages
+
+Media controls depend on what the playing app reports to Windows. See
 [which players support what](docs/GSMTC-Support-And-Popular-Apps.md).
 
-> There's no flyout for keyboard backlight or the Fn key — those aren't key presses, they're hardware
+> There's no flyout for keyboard backlight or the Fn key. Those aren't key presses — they're hardware
 > signals handled by your OEM's driver, so no application can see them.
 
-## About this fork
+## Privacy
 
-The [original project](https://github.com/ModernFlyouts-Community/ModernFlyouts) is no longer
-maintained, and its last release shipped as a signed MSIX whose certificate has since expired — which
-is why installing it stopped working for most people.
+No analytics, no crash reporting, no telemetry, no network requests. Settings stay on your machine.
+See [Privacy.md](Privacy.md).
 
-This fork fixes that by shipping a plain portable build instead, and repairs the flyout detection that
-broke on recent Windows 11 builds. See [FORK_CHANGES.md](FORK_CHANGES.md) for the details.
-
-## Building from source
+## Building
 
 You need the [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0). Visual Studio is not
 required.
@@ -73,22 +90,26 @@ cd ModernFlyouts
 # run it
 dotnet run --project ModernFlyouts/ModernFlyouts.csproj -p:Platform=x64
 
-# or produce the same portable build the releases use
+# or build the portable output the releases use
 dotnet publish ModernFlyouts/ModernFlyouts.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -o out
 ```
 
-The `ModernFlyoutsBridge`, `ModernFlyoutsHost` and `ModernFlyouts.Package` projects are only needed to
-produce an MSIX package. The portable build doesn't use them, and you can ignore them unless you're
-packaging for the Store.
+## Contributing
+
+Bug reports and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). When reporting a
+problem, please include your Windows build number (`winver`); it matters more than you'd think for
+this app.
 
 ## Credits
 
-Built on [ModernFlyouts](https://github.com/ModernFlyouts-Community/ModernFlyouts), which in turn grew
-out of [AudioFlyout](https://github.com/ADeltaX/AudioFlyout) by [ADeltaX](https://github.com/ADeltaX/).
+Originally created by [ShankarBUS](https://github.com/ShankarBUS/) and the ModernFlyouts
+contributors, and built on [AudioFlyout](https://github.com/ADeltaX/AudioFlyout) by
+[ADeltaX](https://github.com/ADeltaX/), whose work made the whole thing possible.
 
 Uses [NAudio](https://github.com/naudio/NAudio),
 [ModernWpf](https://github.com/Kinnara/ModernWpf) and
 [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon).
+Third-party licences are listed in [NOTICE.md](NOTICE.md).
 
 ## License
 
