@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: "\U0001F4E6 Download the latest build"
-    url: https://github.com/hasan-ismail/ModernFlyouts/releases/latest
+    url: https://github.com/hasan-ismail/Aurelia/releases/latest
     about: Installer and portable builds. Please check you are on the latest version before reporting a bug.
-  - name: "\U0001F527 What changed in this fork"
-    url: https://github.com/hasan-ismail/ModernFlyouts/blob/main/FORK_CHANGES.md
-    about: The list of fixes and changes made since the original project stopped being maintained.
+  - name: "\U0001F527 What's changed"
+    url: https://github.com/hasan-ismail/Aurelia/blob/main/CHANGELOG.md
+    about: Release notes and the list of changes.

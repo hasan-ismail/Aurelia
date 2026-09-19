@@ -1,82 +1,86 @@
-![ModernFlyouts](ModernFlyouts/Assets/Images/Readme_Banner.png)
+# Aurelia
 
-# ModernFlyouts
+Beautiful on-screen flyouts for Windows — volume, media, brightness, airplane mode and lock keys,
+in translucent glass instead of the plain grey box Windows shows you.
 
-A modern, Fluent Design replacement for the Windows volume, brightness, media and airplane-mode flyouts.
-
-[![Build](https://github.com/hasan-ismail/ModernFlyouts/actions/workflows/build.yml/badge.svg)](https://github.com/hasan-ismail/ModernFlyouts/actions/workflows/build.yml)
-[![Release](https://img.shields.io/github/v/release/hasan-ismail/ModernFlyouts?logo=github)](https://github.com/hasan-ismail/ModernFlyouts/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/hasan-ismail/ModernFlyouts/total?logo=github)](https://github.com/hasan-ismail/ModernFlyouts/releases)
+[![Build](https://github.com/hasan-ismail/Aurelia/actions/workflows/build.yml/badge.svg)](https://github.com/hasan-ismail/Aurelia/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/hasan-ismail/Aurelia?logo=github)](https://github.com/hasan-ismail/Aurelia/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/hasan-ismail/Aurelia/total?logo=github)](https://github.com/hasan-ismail/Aurelia/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-![Overview](docs/images/Overview.png)
+Press a volume, media or brightness key and Windows shows a small popup in the corner. Aurelia
+replaces it with something worth looking at — real media controls, a proper volume slider, a live
+seek bar, per-display brightness, and a glass surface that catches the light as your cursor moves
+across it.
 
-Press a volume, media or brightness key and Windows shows a small on-screen popup. ModernFlyouts
-replaces it with a much better one — real media controls, a proper volume slider, per-monitor
-brightness, and flyouts for the lock keys.
-
-Your built-in flyout isn't modified. It's hidden while ModernFlyouts is running, and Windows goes
-straight back to normal when you quit.
-
-> **This is an actively maintained continuation of the project.** The original stopped receiving
-> updates and its last release could no longer even be installed — its signing certificate had
-> expired. This version is rebuilt on .NET 9, fixes the detection that broke on recent Windows 11
-> builds, and ships a normal installer. See [what's changed](FORK_CHANGES.md).
+Your built-in flyout isn't modified. It's hidden while Aurelia is running, and Windows goes straight
+back to normal when you quit.
 
 ## Install
 
-Download the latest build from the [Releases page](https://github.com/hasan-ismail/ModernFlyouts/releases/latest).
+Download the latest build from the [Releases page](https://github.com/hasan-ismail/Aurelia/releases/latest).
 
 | | |
 | --- | --- |
-| **Installer** (recommended) | `ModernFlyouts-Setup-x64.exe` — installs, adds a Start Menu entry, optional start-with-Windows, and uninstalls cleanly |
-| **Portable** | `ModernFlyouts-portable-win-x64.zip` — unzip and run, nothing is written outside the folder |
+| **Installer** (recommended) | `Aurelia-Setup-x64.exe` — no admin prompt, Start Menu entry, optional start-with-Windows, clean uninstall |
+| **Portable** | `Aurelia-portable-win-x64.zip` — unzip and run, nothing written outside the folder |
 | **ARM devices** | Use the `arm64` build (Surface Pro X, Snapdragon laptops) |
 
-No certificate to install, and no separate .NET download — the runtime is bundled.
+No certificate to install and no separate .NET download — the runtime is bundled.
 
-The app runs in your system tray. Double-click the icon for settings, or right-click for Settings
+Aurelia runs in your system tray. Double-click the icon for settings, or right-click for Settings
 and Exit.
 
 **Requires Windows 10 1809 or newer, or Windows 11.**
+
+## Themes
+
+Nine built-in looks — **Classic, Frost, Midnight, Aurora, Ember, Nord, Rose, Vapor, Mono** — each
+setting an accent colour, how solid the glass is, how round the corners are, and light or dark.
+
+A theme is a starting point, not a cage. Pick one, then change anything you like: accent colour by
+swatch or hex, glass opacity, corner roundness, light or dark. The moment you adjust something it
+simply reads as Custom.
 
 ## Features
 
 **Flyouts**
 
-- **Volume** — a real slider, click the icon to mute, scroll the slider to adjust
-- **Media** — play/pause, next/previous, shuffle, repeat, stop, and a seekable timeline
-- **Brightness** — per-monitor on multi-monitor setups, including external displays over DDC/CI
+- **Volume** — a real slider, click the icon to mute, scroll to adjust
+- **Media** — play/pause, next/previous, shuffle, repeat, stop, and a seek bar that actually moves
+- **Brightness** — per display, with a link button to move them together or set them apart
 - **Airplane mode**
 - **Lock keys** — Caps Lock, Num Lock, Scroll Lock and Insert/Overtype
 
 **Appearance**
 
-- Light and dark themes, following Windows or pinned to one
-- Adjustable background opacity
-- Smooth open/close animations, which can be turned off
-- Drag the flyout anywhere — it remembers where you put it
-- Choose which monitor it shows on, or place it manually
-- Configurable timeout, alignment, and content stacking direction
-- Show, hide or pin the flyout's top bar; optional coloured tray icon
+- Translucent glass with a specular sheen and a lit rim, or a flat surface if you prefer
+- A highlight that follows your cursor across the flyout
+- Slider thumbs that grow under the pointer
+- Light and dark, following Windows or pinned
+- Adjustable opacity and corner roundness
+- Drag it anywhere — it remembers where you put it
+- Choose which monitor it appears on
+- Configurable timeout, alignment and stacking direction
 
 **Behaviour**
 
-- Every module can be turned off individually — use just the ones you want
+- Every module can be turned off individually
 - Or turn the whole thing off and get the Windows flyouts back, without uninstalling
 - Start with Windows, optional
+- Animations honour the Windows "Show animations" accessibility setting
 - Translated into 30+ languages
 
 Media controls depend on what the playing app reports to Windows. See
 [which players support what](docs/GSMTC-Support-And-Popular-Apps.md).
 
-> There's no flyout for keyboard backlight or the Fn key. Those aren't key presses — they're hardware
-> signals handled by your OEM's driver, so no application can see them.
+> There's no flyout for keyboard backlight or the Fn key. Those aren't key presses — they're
+> hardware signals handled by your OEM's driver, so no application can see them.
 
 ## Privacy
 
-No analytics, no crash reporting, no telemetry, no network requests. Settings stay on your machine.
-See [Privacy.md](Privacy.md).
+No analytics, no crash reporting, no telemetry, no network requests. Your settings stay on your
+machine. See [Privacy.md](Privacy.md).
 
 ## Building
 
@@ -84,14 +88,14 @@ You need the [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0). Vis
 required.
 
 ```bash
-git clone https://github.com/hasan-ismail/ModernFlyouts.git
-cd ModernFlyouts
+git clone https://github.com/hasan-ismail/Aurelia.git
+cd Aurelia
 
 # run it
-dotnet run --project ModernFlyouts/ModernFlyouts.csproj -p:Platform=x64
+dotnet run --project Aurelia/Aurelia.csproj -p:Platform=x64
 
 # or build the portable output the releases use
-dotnet publish ModernFlyouts/ModernFlyouts.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -o out
+dotnet publish Aurelia/Aurelia.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -o out
 ```
 
 ## Contributing
@@ -102,11 +106,13 @@ this app.
 
 ## Credits
 
-Originally created by [ShankarBUS](https://github.com/ShankarBUS/) and the ModernFlyouts
-contributors, and built on [AudioFlyout](https://github.com/ADeltaX/AudioFlyout) by
-[ADeltaX](https://github.com/ADeltaX/), whose work made the whole thing possible.
+Aurelia takes its inspiration from [ModernFlyouts](https://github.com/ModernFlyouts-Community/ModernFlyouts)
+by [ShankarBUS](https://github.com/ShankarBUS/) and its contributors, which itself grew out of
+[AudioFlyout](https://github.com/ADeltaX/AudioFlyout) by [ADeltaX](https://github.com/ADeltaX/).
+Aurelia shares MIT-licensed code with that lineage, so their copyright notices are kept in
+[LICENSE](LICENSE). Thanks to everyone who worked on them.
 
-Uses [NAudio](https://github.com/naudio/NAudio),
+Built with [NAudio](https://github.com/naudio/NAudio),
 [ModernWpf](https://github.com/Kinnara/ModernWpf) and
 [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon).
 Third-party licences are listed in [NOTICE.md](NOTICE.md).

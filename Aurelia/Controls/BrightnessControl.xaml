@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="Aurelia.Controls.BrightnessControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:local="clr-namespace:Aurelia.Controls"
+             xmlns:behaviors="clr-namespace:Aurelia.Behaviors"
+             xmlns:rootui="clr-namespace:Aurelia.UI"
+             xmlns:toolkit="http://schemas.modernwpf.com/toolkit"
+             xmlns:utils="clr-namespace:Aurelia.Utilities"
+             xmlns:resx="clr-namespace:Aurelia.Properties"
+             xmlns:display="clr-namespace:Aurelia.Core.Display;assembly=Aurelia.Core"
+             mc:Ignorable="d" d:DesignWidth="354"
+             MaxHeight="216" DataContext="{x:Static display:BrightnessManager.Instance}">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <!-- Auto, so it takes no space at all on a single-display machine. -->
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+    <local:ContentScrollViewer x:Name="ContentScrollViewer" Grid.Column="0"
+                               ContentHeight="48"
+                               ContentWidth="{Binding SliderAreaWidth, RelativeSource={RelativeSource AncestorType=local:BrightnessControl}}"
+                               VerticalSpacing="{x:Static rootui:UIManager.DefaultVerticalSpacing}">
+        <ItemsControl ItemsSource="{Binding BrightnessControllers}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ui:SimpleStackPanel Orientation="Vertical"
+                        Spacing="{x:Static rootui:UIManager.DefaultVerticalSpacing}"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type display:BrightnessController}">
+                    <Border Height="48" CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            Background="{DynamicResource SystemControlBackgroundAltMediumLowBrush}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="48" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid ToolTip="{Binding AssociatedDisplayMonitor.DisplayName}">
+                                <ui:FontIcon x:Name="BrightnessGlyph" Grid.Column="0" FontSize="16">
+                                    <ui:FontIcon.Glyph>
+                                        <Binding Path="Brightness">
+                                            <Binding.Converter>
+                                                <toolkit:DoubleToObjectConverter GreaterThan="50"
+                                                TrueValue="{x:Static utils:CommonGlyphs.Brightness}"
+                                                FalseValue="{x:Static utils:CommonGlyphs.LowerBrightness}" />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </ui:FontIcon.Glyph>
+                                </ui:FontIcon>
+                            </Grid>
+
+                            <Slider x:Name="BrightnessSlider" Maximum="{Binding Maximum}"
+                                    Minimum="{Binding Minimum}" Grid.Column="1" VerticalAlignment="Center" Margin="8,0"
+                                    SmallChange="0.01" Value="{Binding Brightness}" IsMoveToPointEnabled="True"
+                                    behaviors:SliderThumbHoverBehavior.IsEnabled="True" />
+
+                            <TextBlock x:Name="textVal" Grid.Column="2" HorizontalAlignment="Center" Margin="6"
+                                       Style="{DynamicResource SubtitleTextBlockStyle}"
+                                       Text="{Binding Brightness, StringFormat={}{0:#0}}" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.Resources>
+        </ItemsControl>
+    </local:ContentScrollViewer>
+
+        <!-- Link / unlink every display's brightness. It sits in its own column, vertically
+             centred beside the sliders: floating it over the content put it straight on top of
+             the first row's value. Hidden entirely on a single-screen machine. -->
+        <ToggleButton x:Name="SyncToggle" Grid.Column="1" IsChecked="{Binding IsSyncEnabled, Mode=TwoWay}"
+                      Visibility="{Binding CanSync, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Margin="2,0,10,0" Width="30" Height="30" Padding="0"
+                      ui:ControlHelper.CornerRadius="6"
+                      Style="{DynamicResource DefaultToggleButtonStyle}"
+                      ToolTip="{x:Static resx:Strings.BrightnessControl_SyncDisplays}">
+            <ui:FontIcon FontSize="13">
+                <ui:FontIcon.Glyph>
+                    <Binding Path="IsSyncEnabled">
+                        <Binding.Converter>
+                            <toolkit:BoolToObjectConverter
+                                TrueValue="{x:Static utils:CommonGlyphs.LinkedDisplays}"
+                                FalseValue="{x:Static utils:CommonGlyphs.UnlinkedDisplays}" />
+                        </Binding.Converter>
+                    </Binding>
+                </ui:FontIcon.Glyph>
+            </ui:FontIcon>
+        </ToggleButton>
+    </Grid>
+</UserControl>

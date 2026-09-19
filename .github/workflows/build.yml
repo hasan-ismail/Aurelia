@@ -1,4 +1,4 @@
-# Builds ModernFlyouts as a portable, self-contained app.
+# Builds Aurelia as a portable, self-contained app.
 #
 # The original project shipped only an MSIX bundle, which has to be signed. When that signing
 # certificate expired users could no longer install the app at all, and there was no other download
@@ -6,8 +6,8 @@
 #
 # This produces two unsigned, self-contained artifacts per architecture, neither of which needs a
 # certificate or a .NET install:
-#   * ModernFlyouts-Setup-<arch>.exe      - a per-user Inno Setup installer
-#   * ModernFlyouts-portable-<rid>.zip    - unzip and run
+#   * Aurelia-Setup-<arch>.exe      - a per-user Inno Setup installer
+#   * Aurelia-portable-<rid>.zip    - unzip and run
 name: Build
 
 on:
@@ -42,11 +42,11 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore
-        run: dotnet restore ModernFlyouts/ModernFlyouts.csproj -r ${{ matrix.rid }} -p:Platform=${{ matrix.platform }}
+        run: dotnet restore Aurelia/Aurelia.csproj -r ${{ matrix.rid }} -p:Platform=${{ matrix.platform }}
 
       - name: Publish (self-contained, portable)
         run: >
-          dotnet publish ModernFlyouts/ModernFlyouts.csproj
+          dotnet publish Aurelia/Aurelia.csproj
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
@@ -59,7 +59,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force artifacts | Out-Null
           Compress-Archive -Path publish/${{ matrix.rid }}/* `
-                           -DestinationPath artifacts/ModernFlyouts-portable-${{ matrix.rid }}.zip
+                           -DestinationPath artifacts/Aurelia-portable-${{ matrix.rid }}.zip
 
       - name: Read version
         id: version
@@ -87,12 +87,12 @@ jobs:
           & $iscc /DAppVersion=${{ steps.version.outputs.version }} `
                   /DArch=${{ matrix.platform }} `
                   /DPayloadDir=..\publish\${{ matrix.rid }} `
-                  installer\ModernFlyouts.iss
+                  installer\Aurelia.iss
           if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with $LASTEXITCODE" }
 
       - uses: actions/upload-artifact@v7
         with:
-          name: ModernFlyouts-${{ matrix.rid }}
+          name: Aurelia-${{ matrix.rid }}
           path: artifacts/*
           if-no-files-found: error
 

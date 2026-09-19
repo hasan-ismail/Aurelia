@@ -1,6 +1,11 @@
 MIT License
 
-Copyright (c) 2020 Shankar
+Copyright (c) 2026 Hasan Ismail and Aurelia contributors
+Copyright (c) 2020 Shankar and the ModernFlyouts contributors
+
+Aurelia grew out of ModernFlyouts, which in turn grew out of ADeltaX's
+AudioFlyout. The original copyright notice above is retained as the MIT licence
+requires. Third-party notices are in NOTICE.md.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
