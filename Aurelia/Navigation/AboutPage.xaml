@@ -30,6 +30,28 @@
                                 NavigateUri="https://github.com/hasan-ismail/Aurelia/network/dependencies" />
             <ui:HyperlinkButton Content="{x:Static resx:Strings.About_OpenNewIssue}"
                                 NavigateUri="https://github.com/hasan-ismail/Aurelia/issues/new/choose" />
+
+            <!-- The AGPL expects an interactive program to show its copyright, state that there is
+                 no warranty, and say how to read the licence. The source link is what the licence
+                 is ultimately about, so it belongs here too. -->
+            <Border Margin="0,10,0,0" Padding="14" CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundAltMediumLowBrush}">
+                <ui:SimpleStackPanel Spacing="6">
+                    <TextBlock TextWrapping="Wrap" Opacity="0.85"
+                               Text="{x:Static resx:Strings.About_License}" />
+                    <TextBlock TextWrapping="Wrap" Opacity="0.7"
+                               Style="{DynamicResource CaptionTextBlockStyle}"
+                               Text="{x:Static local:Program.Copyright}" />
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="4">
+                        <ui:HyperlinkButton Content="{x:Static resx:Strings.About_ViewLicense}"
+                                            NavigateUri="https://github.com/hasan-ismail/Aurelia/blob/main/LICENSE" />
+                        <ui:HyperlinkButton Content="{x:Static resx:Strings.About_SourceCode}"
+                                            NavigateUri="https://github.com/hasan-ismail/Aurelia" />
+                        <ui:HyperlinkButton Content="{x:Static resx:Strings.About_ThirdPartyNotices}"
+                                            NavigateUri="https://github.com/hasan-ismail/Aurelia/blob/main/NOTICE.md" />
+                    </ui:SimpleStackPanel>
+                </ui:SimpleStackPanel>
+            </Border>
         </ui:SimpleStackPanel>
     </controls:ScrollViewerEx>
 </Page>

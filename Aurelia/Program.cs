@@ -90,6 +90,16 @@ namespace Aurelia
             get => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
+        /// <summary>
+        /// The copyright line shown in About. Read from the assembly so it stays in step with the
+        /// Copyright property in Directory.Build.props rather than being duplicated here.
+        /// </summary>
+        public static string Copyright
+        {
+            get => Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright ?? string.Empty;
+        }
+
         internal static void InitializePrivateUseClasses()
         {
 #if Screenshots

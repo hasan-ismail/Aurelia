@@ -1,6 +1,51 @@
-# NOTICES AND INFORMATION
+# Notices and third-party licences
 
-This software incorporates material from third parties.
+Aurelia as a whole is licensed under the **GNU Affero General Public License v3.0**
+(see [LICENSE](LICENSE)).
+
+Parts of it derive from MIT-licensed projects. MIT permits redistribution under the
+AGPL, provided the original copyright and permission notices are kept — they are
+reproduced below, and they continue to govern those portions.
+
+---
+
+## Aurelia's origins
+
+### ModernFlyouts
+
+**Source:** https://github.com/ModernFlyouts-Community/ModernFlyouts
+
+MIT License
+
+Copyright (c) 2020 Shankar and the ModernFlyouts contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Bundled and referenced components
+
+This software incorporates material from third parties. Every NuGet package
+Aurelia depends on is MIT-licensed: CommunityToolkit.Mvvm, ModernWpfUI,
+ModernWpf.Toolkit.UI.Controls, Microsoft.Xaml.Behaviors.Wpf, NAudio.Wasapi,
+NPSMLib, Hardcodet.NotifyIcon.Wpf.NetCore, System.Drawing.Common and
+System.Management.
 
 ## Aurelia: Audio-flyout module
 

@@ -889,6 +889,42 @@ namespace Aurelia.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aurelia is free software under the GNU Affero General Public License v3.0....
+        /// </summary>
+        public static string About_License {
+            get {
+                return ResourceManager.GetString("About.License", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the licence.
+        /// </summary>
+        public static string About_ViewLicense {
+            get {
+                return ResourceManager.GetString("About.ViewLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get the source code.
+        /// </summary>
+        public static string About_SourceCode {
+            get {
+                return ResourceManager.GetString("About.SourceCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third-party notices.
+        /// </summary>
+        public static string About_ThirdPartyNotices {
+            get {
+                return ResourceManager.GetString("About.ThirdPartyNotices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Theme.
         /// </summary>
         public static string Settings_ThemePreset {

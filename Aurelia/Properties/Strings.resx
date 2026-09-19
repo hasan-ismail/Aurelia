@@ -344,6 +344,18 @@
   <data name="BrightnessControl.SyncDisplays" xml:space="preserve">
     <value>Link brightness across displays</value>
   </data>
+  <data name="About.License" xml:space="preserve">
+    <value>Aurelia is free software under the GNU Affero General Public License v3.0. It comes with absolutely no warranty. You are free to change it and share it, provided you pass on the same freedoms.</value>
+  </data>
+  <data name="About.ViewLicense" xml:space="preserve">
+    <value>View the licence</value>
+  </data>
+  <data name="About.SourceCode" xml:space="preserve">
+    <value>Get the source code</value>
+  </data>
+  <data name="About.ThirdPartyNotices" xml:space="preserve">
+    <value>Third-party notices</value>
+  </data>
   <data name="Settings.ThemePreset" xml:space="preserve">
     <value>Theme</value>
   </data>

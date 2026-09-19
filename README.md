@@ -6,7 +6,7 @@ in translucent glass instead of the plain grey box Windows shows you.
 [![Build](https://github.com/hasan-ismail/Aurelia/actions/workflows/build.yml/badge.svg)](https://github.com/hasan-ismail/Aurelia/actions/workflows/build.yml)
 [![Release](https://img.shields.io/github/v/release/hasan-ismail/Aurelia?logo=github)](https://github.com/hasan-ismail/Aurelia/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/hasan-ismail/Aurelia/total?logo=github)](https://github.com/hasan-ismail/Aurelia/releases)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 Press a volume, media or brightness key and Windows shows a small popup in the corner. Aurelia
 replaces it with something worth looking at — real media controls, a proper volume slider, a live
@@ -110,7 +110,7 @@ Aurelia takes its inspiration from [ModernFlyouts](https://github.com/ModernFlyo
 by [ShankarBUS](https://github.com/ShankarBUS/) and its contributors, which itself grew out of
 [AudioFlyout](https://github.com/ADeltaX/AudioFlyout) by [ADeltaX](https://github.com/ADeltaX/).
 Aurelia shares MIT-licensed code with that lineage, so their copyright notices are kept in
-[LICENSE](LICENSE). Thanks to everyone who worked on them.
+[NOTICE.md](NOTICE.md). Thanks to everyone who worked on them.
 
 Built with [NAudio](https://github.com/naudio/NAudio),
 [ModernWpf](https://github.com/Kinnara/ModernWpf) and
@@ -119,4 +119,12 @@ Third-party licences are listed in [NOTICE.md](NOTICE.md).
 
 ## License
 
-[MIT](LICENSE).
+Aurelia is free software under the **[GNU Affero General Public License v3.0](LICENSE)**.
+
+You can use it, study it, change it and share it. If you distribute a modified version — or run one
+where other people can interact with it over a network — you have to offer them the source of your
+version under the same licence.
+
+Parts of Aurelia derive from MIT-licensed projects. MIT allows redistribution under the AGPL as long
+as the original notices travel with the code; those notices are in [NOTICE.md](NOTICE.md) and
+continue to govern those portions. Every package Aurelia depends on is MIT-licensed.
