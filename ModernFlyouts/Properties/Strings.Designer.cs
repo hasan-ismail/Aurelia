@@ -889,29 +889,47 @@ namespace ModernFlyouts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Theme.
+        /// </summary>
+        public static string Settings_ThemePreset {
+            get {
+                return ResourceManager.GetString("Settings.ThemePreset", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A starting point - every part of it can still be changed below.
+        /// </summary>
+        public static string Settings_ThemePresetDescription {
+            get {
+                return ResourceManager.GetString("Settings.ThemePresetDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Corner roundness.
+        /// </summary>
+        public static string Settings_FlyoutCornerRadius {
+            get {
+                return ResourceManager.GetString("Settings.FlyoutCornerRadius", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use the Windows accent colour.
+        /// </summary>
+        public static string Settings_UseSystemAccentColor {
+            get {
+                return ResourceManager.GetString("Settings.UseSystemAccentColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accent colour.
         /// </summary>
         public static string Settings_FlyoutAccentColor {
             get {
                 return ResourceManager.GetString("Settings.FlyoutAccentColor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Halo colour.
-        /// </summary>
-        public static string Settings_FlyoutHaloColor {
-            get {
-                return ResourceManager.GetString("Settings.FlyoutHaloColor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Halo strength.
-        /// </summary>
-        public static string Settings_FlyoutHaloIntensity {
-            get {
-                return ResourceManager.GetString("Settings.FlyoutHaloIntensity", resourceCulture);
             }
         }
         

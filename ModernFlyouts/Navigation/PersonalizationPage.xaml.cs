@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+using System.Windows;
+using System.Windows.Controls;
+using ModernFlyouts.UI;
 
 namespace ModernFlyouts.Navigation
 {
@@ -7,6 +9,14 @@ namespace ModernFlyouts.Navigation
         public PersonalizationPage()
         {
             InitializeComponent();
+        }
+
+        private void ThemePresetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button { Tag: FlyoutThemePreset preset })
+            {
+                FlyoutHandler.Instance?.UIManager?.ApplyThemePreset(preset);
+            }
         }
     }
 }

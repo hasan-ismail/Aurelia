@@ -19,7 +19,7 @@ namespace ModernFlyouts.Core.UI
             RaiseEvent(args);
 
 
-            if (FlyoutAnimationEnabled)
+            if (FlyoutAnimationEnabled && AreAnimationsAllowed)
             {
                 c_translation = 40;
                 PlayOpenAnimation();
@@ -27,7 +27,7 @@ namespace ModernFlyouts.Core.UI
             else
             {
                 c_translation = 0;
-                RenderTransform = new TranslateTransform();
+                RenderTransform = CreateRenderTransform();
                 BeginAnimation(VisibilityProperty, null);
                 BeginAnimation(OpacityProperty, null);
                 Visibility = Visibility.Visible;
@@ -42,7 +42,7 @@ namespace ModernFlyouts.Core.UI
             RoutedEventArgs args = new(ClosingEvent);
             RaiseEvent(args);
 
-            if (FlyoutAnimationEnabled)
+            if (FlyoutAnimationEnabled && AreAnimationsAllowed)
             {
                 PlayCloseAnimation();
             }
@@ -132,10 +132,39 @@ namespace ModernFlyouts.Core.UI
 
         private static readonly PropertyPath opacityPath = new(OpacityProperty);
         private static readonly PropertyPath visibilityPath = new(VisibilityProperty);
-        private static readonly PropertyPath translateXPath = new("(UIElement.RenderTransform).(TranslateTransform.X)");
-        private static readonly PropertyPath translateYPath = new("(UIElement.RenderTransform).(TranslateTransform.Y)");
+        // RenderTransform is a TransformGroup of [0] scale, [1] translate, so the flyout can rise
+        // and swell very slightly at the same time.
+        private static readonly PropertyPath translateXPath = new("(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.X)");
+        private static readonly PropertyPath translateYPath = new("(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)");
+        private static readonly PropertyPath scaleXPath = new("(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)");
+        private static readonly PropertyPath scaleYPath = new("(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)");
+
         private static readonly KeySpline decelerateKeySplineOpening = new(0.1, 0.9, 0.2, 1);
         private static readonly KeySpline decelerateKeySplineClosing = new(1, 0.2, 0.9, 0.1);
+
+        // Gentle ease for opacity, so the flyout washes in rather than snapping on.
+        private static readonly KeySpline fadeKeySpline = new(0.25, 0.1, 0.25, 1);
+
+        // How small the flyout starts before settling at full size.
+        private const double openScale = 0.94;
+
+        private static readonly TimeSpan fadeInDuration = TimeSpan.FromMilliseconds(220);
+        private static readonly TimeSpan fadeOutDuration = TimeSpan.FromMilliseconds(180);
+
+        /// <summary>
+        /// The Windows "Show animations" accessibility setting. When someone has turned animations
+        /// off system-wide, honour it rather than animating anyway.
+        /// </summary>
+        private static bool AreAnimationsAllowed => SystemParameters.ClientAreaAnimation;
+
+        private static TransformGroup CreateRenderTransform() => new()
+        {
+            Children =
+            {
+                new ScaleTransform(1.0, 1.0),
+                new TranslateTransform()
+            }
+        };
 
 
         private void PrepareAnimations()
@@ -144,9 +173,10 @@ namespace ModernFlyouts.Core.UI
             EnsureOpeningStoryboard();
 
             Opacity = 0.0;
-            if (!(RenderTransform is TranslateTransform))
+            if (RenderTransform is not TransformGroup)
             {
-                RenderTransform = new TranslateTransform();
+                RenderTransform = CreateRenderTransform();
+                RenderTransformOrigin = new Point(0.5, 0.5);
             }
 
             hasAnimationsCreated = true;
@@ -170,17 +200,40 @@ namespace ModernFlyouts.Core.UI
                 Storyboard.SetTargetProperty(visibilityAnim, visibilityPath);
                 
 
+                // Fades from the first frame on an ease, rather than sitting invisible for 83ms
+                // and then snapping in linearly - that hold is what made the entrance feel abrupt.
                 DoubleAnimationUsingKeyFrames opacityAnim = new()
                 {
                     KeyFrames =
                     {
                         new DiscreteDoubleKeyFrame(0, TimeSpan.Zero),
-                        new DiscreteDoubleKeyFrame(0, TimeSpan.FromMilliseconds(83)),
-                        new LinearDoubleKeyFrame(1, TimeSpan.FromMilliseconds(166))
+                        new SplineDoubleKeyFrame(1, fadeInDuration, fadeKeySpline)
                     }
                 };
                 Storyboard.SetTarget(opacityAnim, this);
                 Storyboard.SetTargetProperty(opacityAnim, opacityPath);
+
+                DoubleAnimationUsingKeyFrames scaleXAnim = new()
+                {
+                    KeyFrames =
+                    {
+                        new DiscreteDoubleKeyFrame(openScale, TimeSpan.Zero),
+                        new SplineDoubleKeyFrame(1.0, translateDuration, decelerateKeySplineOpening)
+                    }
+                };
+                Storyboard.SetTarget(scaleXAnim, this);
+                Storyboard.SetTargetProperty(scaleXAnim, scaleXPath);
+
+                DoubleAnimationUsingKeyFrames scaleYAnim = new()
+                {
+                    KeyFrames =
+                    {
+                        new DiscreteDoubleKeyFrame(openScale, TimeSpan.Zero),
+                        new SplineDoubleKeyFrame(1.0, translateDuration, decelerateKeySplineOpening)
+                    }
+                };
+                Storyboard.SetTarget(scaleYAnim, this);
+                Storyboard.SetTargetProperty(scaleYAnim, scaleYPath);
 
                 DoubleAnimationUsingKeyFrames xAnim = new()
                 {
@@ -206,7 +259,7 @@ namespace ModernFlyouts.Core.UI
 
                 openingStoryboard = new()
                 {
-                    Children = { visibilityAnim, opacityAnim, xAnim, yAnim },
+                    Children = { visibilityAnim, opacityAnim, scaleXAnim, scaleYAnim, xAnim, yAnim },
                 };
             }
         }
@@ -220,12 +273,33 @@ namespace ModernFlyouts.Core.UI
                     KeyFrames =
                     {
                         new DiscreteDoubleKeyFrame(1, TimeSpan.Zero),
-                        new DiscreteDoubleKeyFrame(1, TimeSpan.FromMilliseconds(83)),
-                        new LinearDoubleKeyFrame(0, TimeSpan.FromMilliseconds(166))
+                        new SplineDoubleKeyFrame(0, fadeOutDuration, fadeKeySpline)
                     }
                 };
                 Storyboard.SetTarget(opacityAnim, this);
                 Storyboard.SetTargetProperty(opacityAnim, opacityPath);
+
+                DoubleAnimationUsingKeyFrames scaleXAnimClosing = new()
+                {
+                    KeyFrames =
+                    {
+                        new DiscreteDoubleKeyFrame(1.0, TimeSpan.Zero),
+                        new SplineDoubleKeyFrame(openScale, fadeOutDuration, decelerateKeySplineClosing)
+                    }
+                };
+                Storyboard.SetTarget(scaleXAnimClosing, this);
+                Storyboard.SetTargetProperty(scaleXAnimClosing, scaleXPath);
+
+                DoubleAnimationUsingKeyFrames scaleYAnimClosing = new()
+                {
+                    KeyFrames =
+                    {
+                        new DiscreteDoubleKeyFrame(1.0, TimeSpan.Zero),
+                        new SplineDoubleKeyFrame(openScale, fadeOutDuration, decelerateKeySplineClosing)
+                    }
+                };
+                Storyboard.SetTarget(scaleYAnimClosing, this);
+                Storyboard.SetTargetProperty(scaleYAnimClosing, scaleYPath);
 
                 DoubleAnimationUsingKeyFrames xAnim = new()
                 {
@@ -263,7 +337,7 @@ namespace ModernFlyouts.Core.UI
 
                 closingStoryboard = new()
                 {
-                    Children = { opacityAnim, xAnim, yAnim, visibilityAnim },
+                    Children = { opacityAnim, scaleXAnimClosing, scaleYAnimClosing, xAnim, yAnim, visibilityAnim },
                 };
             }
         }

@@ -35,9 +35,9 @@ namespace ModernFlyouts.UI.Fluent.Media
         /// <summary>Radius of the highlight, in device-independent pixels.</summary>
         private const double RadiusPixels = 130.0;
 
-        private static readonly Duration FadeIn = new(TimeSpan.FromMilliseconds(140));
+        private static readonly Duration FadeIn = new(TimeSpan.FromMilliseconds(260));
 
-        private static readonly Duration FadeOut = new(TimeSpan.FromMilliseconds(260));
+        private static readonly Duration FadeOut = new(TimeSpan.FromMilliseconds(420));
 
         #region IsEnabled
 
@@ -246,8 +246,8 @@ namespace ModernFlyouts.UI.Fluent.Media
         {
             brush.GradientStops = new GradientStopCollection
             {
-                new GradientStop(Color.FromArgb(0x55, accent.R, accent.G, accent.B), 0.0),
-                new GradientStop(Color.FromArgb(0x22, accent.R, accent.G, accent.B), 0.45),
+                new GradientStop(Color.FromArgb(0x3A, accent.R, accent.G, accent.B), 0.0),
+                new GradientStop(Color.FromArgb(0x16, accent.R, accent.G, accent.B), 0.40),
                 new GradientStop(Color.FromArgb(0x00, accent.R, accent.G, accent.B), 1.0)
             };
         }
@@ -305,7 +305,7 @@ namespace ModernFlyouts.UI.Fluent.Media
             {
                 To = to,
                 Duration = duration,
-                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
             });
         }
     }

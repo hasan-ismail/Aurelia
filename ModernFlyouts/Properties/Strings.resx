@@ -344,14 +344,20 @@
   <data name="BrightnessControl.SyncDisplays" xml:space="preserve">
     <value>Link brightness across displays</value>
   </data>
+  <data name="Settings.ThemePreset" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Settings.ThemePresetDescription" xml:space="preserve">
+    <value>A starting point - every part of it can still be changed below</value>
+  </data>
+  <data name="Settings.FlyoutCornerRadius" xml:space="preserve">
+    <value>Corner roundness</value>
+  </data>
+  <data name="Settings.UseSystemAccentColor" xml:space="preserve">
+    <value>Use the Windows accent colour</value>
+  </data>
   <data name="Settings.FlyoutAccentColor" xml:space="preserve">
     <value>Accent colour</value>
-  </data>
-  <data name="Settings.FlyoutHaloColor" xml:space="preserve">
-    <value>Halo colour</value>
-  </data>
-  <data name="Settings.FlyoutHaloIntensity" xml:space="preserve">
-    <value>Halo strength</value>
   </data>
   <data name="Settings.FlyoutDefaultPosition" xml:space="preserve">
     <value>Flyout default position</value>

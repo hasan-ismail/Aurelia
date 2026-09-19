@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace ModernFlyouts.Core.Media.Control
 {
@@ -108,7 +109,13 @@ namespace ModernFlyouts.Core.Media.Control
         public bool IsPlaybackPositionEnabled
         {
             get => isPlaybackPositionEnabled;
-            protected set => SetProperty(ref isPlaybackPositionEnabled, value);
+            protected set
+            {
+                if (SetProperty(ref isPlaybackPositionEnabled, value))
+                {
+                    UpdatePositionTicker();
+                }
+            }
         }
 
         #endregion
@@ -120,7 +127,13 @@ namespace ModernFlyouts.Core.Media.Control
         public bool IsPlaying
         {
             get => isPlaying;
-            protected set => SetProperty(ref isPlaying, value);
+            protected set
+            {
+                if (SetProperty(ref isPlaying, value))
+                {
+                    UpdatePositionTicker();
+                }
+            }
         }
 
         private bool? isShuffleActive;
@@ -403,8 +416,81 @@ namespace ModernFlyouts.Core.Media.Control
         /// </summary>
         protected void SetPlaybackPosition(TimeSpan value)
         {
+            // An authoritative update from the media app: anchor the local clock to it.
+            positionBaseline = value;
+            positionBaselineAt = DateTime.UtcNow;
+
             SetProperty(ref playbackPosition, value, nameof(PlaybackPosition));
         }
+
+        #region Live position ticking
+
+        /// <summary>
+        /// Media apps report their timeline only occasionally - often just on track change or
+        /// seek - so the seek bar sat frozen between updates and only appeared to jump when the
+        /// flyout was re-triggered. Between reports the position is advanced from a local clock,
+        /// anchored to the last real update, which keeps the bar moving smoothly without ever
+        /// drifting away from what the app actually says.
+        /// </summary>
+        private TimeSpan positionBaseline = TimeSpan.Zero;
+
+        private DateTime positionBaselineAt = DateTime.UtcNow;
+
+        private DispatcherTimer positionTicker;
+
+        private void UpdatePositionTicker()
+        {
+            bool shouldRun = isPlaying && isPlaybackPositionEnabled;
+
+            if (shouldRun)
+            {
+                if (positionTicker == null)
+                {
+                    positionTicker = new DispatcherTimer(DispatcherPriority.Background)
+                    {
+                        Interval = TimeSpan.FromMilliseconds(250)
+                    };
+                    positionTicker.Tick += (_, _) => AdvancePosition();
+                }
+
+                // Re-anchor so the bar does not jump when playback resumes.
+                positionBaseline = playbackPosition;
+                positionBaselineAt = DateTime.UtcNow;
+
+                positionTicker.Start();
+            }
+            else
+            {
+                positionTicker?.Stop();
+            }
+        }
+
+        private void AdvancePosition()
+        {
+            if (!isPlaying)
+            {
+                positionTicker?.Stop();
+                return;
+            }
+
+            TimeSpan projected = positionBaseline + (DateTime.UtcNow - positionBaselineAt);
+
+            if (TimelineEndTime > TimelineStartTime && projected > TimelineEndTime)
+            {
+                projected = TimelineEndTime;
+            }
+
+            if (projected < TimelineStartTime)
+            {
+                projected = TimelineStartTime;
+            }
+
+            // Deliberately not SetPlaybackPosition: that would re-anchor the clock to a value the
+            // clock itself produced, and it would also look like a user seek to the media app.
+            SetProperty(ref playbackPosition, projected, nameof(PlaybackPosition));
+        }
+
+        #endregion
 
         protected void RaiseMediaPropertiesChanging()
         {

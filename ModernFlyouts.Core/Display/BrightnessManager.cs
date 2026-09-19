@@ -231,6 +231,41 @@ namespace ModernFlyouts.Core.Display
             }
         }
 
+        /// <summary>
+        /// Checks that a monitor really honours brightness writes, by nudging it one step and
+        /// reading the value back.
+        /// </summary>
+        /// <remarks>
+        /// <c>SetMonitorBrightness</c>'s return value cannot be trusted. Some panels - the second
+        /// display on an ASUS Zenbook Duo among them - report success for every write and then
+        /// ignore it. That produced a slider which moved, reported no error, and changed nothing.
+        ///
+        /// The probe moves brightness by a single step and restores it, which is imperceptible,
+        /// and on a panel that ignores writes nothing changes at all.
+        /// </remarks>
+        private static bool CanActuallySetBrightness(IntPtr hPhysicalMonitor, uint minValue, uint currentValue, uint maxValue)
+        {
+            if (maxValue <= minValue)
+            {
+                return false;
+            }
+
+            uint probeValue = currentValue >= maxValue ? currentValue - 1 : currentValue + 1;
+
+            if (!SetMonitorBrightness(hPhysicalMonitor, probeValue))
+            {
+                return false;
+            }
+
+            uint min = 0, readBack = 0, max = 0;
+            bool read = GetMonitorBrightness(hPhysicalMonitor, ref min, ref readBack, ref max);
+
+            // Put it back however the probe went.
+            SetMonitorBrightness(hPhysicalMonitor, currentValue);
+
+            return read && readBack == probeValue;
+        }
+
         private static BrightnessController[] CreateBrightnessControllersForDisplayMonitor(DisplayMonitor displayMonitor)
         {
             List<BrightnessController> brightnessControllers = new();
@@ -251,6 +286,12 @@ namespace ModernFlyouts.Core.Display
             {
                 uint minValue = 0, currentValue = 0, maxValue = 0;
                 if (!GetMonitorBrightness(physicalMonitor.hPhysicalMonitor, ref minValue, ref currentValue, ref maxValue))
+                {
+                    DestroyPhysicalMonitor(physicalMonitor.hPhysicalMonitor);
+                    continue;
+                }
+
+                if (!CanActuallySetBrightness(physicalMonitor.hPhysicalMonitor, minValue, currentValue, maxValue))
                 {
                     DestroyPhysicalMonitor(physicalMonitor.hPhysicalMonitor);
                     continue;

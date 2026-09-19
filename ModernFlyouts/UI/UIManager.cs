@@ -4,6 +4,7 @@ using ModernFlyouts.Core.UI;
 using ModernFlyouts.Helpers;
 using ModernWpf;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -145,6 +146,112 @@ namespace ModernFlyouts.UI
         /// </summary>
         public bool IsGlassEffectSupported => true;
 
+        /// <summary>The built-in looks offered in settings.</summary>
+        public IReadOnlyList<FlyoutThemePreset> ThemePresets => FlyoutThemePreset.All;
+
+        private string flyoutThemePreset = DefaultValuesStore.FlyoutThemePreset;
+
+        /// <summary>
+        /// Name of the preset currently in effect, or empty once any individual setting has been
+        /// changed by hand.
+        /// </summary>
+        public string FlyoutThemePresetName
+        {
+            get => flyoutThemePreset;
+            private set
+            {
+                if (SetProperty(ref flyoutThemePreset, value))
+                {
+                    AppDataHelper.FlyoutThemePreset = value;
+                }
+            }
+        }
+
+        private double flyoutCornerRadius = DefaultValuesStore.FlyoutCornerRadius;
+
+        /// <summary>Corner rounding of the flyout cards.</summary>
+        public double FlyoutCornerRadius
+        {
+            get => flyoutCornerRadius;
+            set
+            {
+                if (SetProperty(ref flyoutCornerRadius, value))
+                {
+                    AppDataHelper.FlyoutCornerRadius = value;
+                    UpdateCornerRadius();
+                    MarkThemeCustomised();
+                }
+            }
+        }
+
+        private bool isApplyingPreset;
+
+        /// <summary>
+        /// Clears the preset name when a value it owns is changed directly, so the settings page
+        /// stops claiming a preset that is no longer accurate.
+        /// </summary>
+        private void MarkThemeCustomised()
+        {
+            if (!isApplyingPreset)
+            {
+                FlyoutThemePresetName = string.Empty;
+            }
+        }
+
+        private void UpdateCornerRadius()
+        {
+            if (Application.Current?.Resources is ResourceDictionary resources)
+            {
+                resources["FlyoutCornerRadius"] = new CornerRadius(flyoutCornerRadius);
+            }
+        }
+
+        /// <summary>Applies a preset by writing its values into the individual settings.</summary>
+        public void ApplyThemePreset(FlyoutThemePreset preset)
+        {
+            if (preset == null)
+            {
+                return;
+            }
+
+            isApplyingPreset = true;
+
+            try
+            {
+                UseSystemAccentColor = false;
+                FlyoutAccentColor = preset.Accent;
+                FlyoutBackgroundOpacity = preset.BackgroundOpacity;
+                FlyoutCornerRadius = preset.CornerRadius;
+                FlyoutTheme = preset.Theme;
+            }
+            finally
+            {
+                isApplyingPreset = false;
+            }
+
+            FlyoutThemePresetName = preset.Name;
+        }
+
+        private bool useSystemAccentColor = DefaultValuesStore.UseSystemAccentColor;
+
+        /// <summary>
+        /// Follow the Windows accent colour. Turning this off hands control of the accent - the
+        /// slider fills, toggles and highlights - to <see cref="FlyoutAccentColor"/>.
+        /// </summary>
+        public bool UseSystemAccentColor
+        {
+            get => useSystemAccentColor;
+            set
+            {
+                if (SetProperty(ref useSystemAccentColor, value))
+                {
+                    AppDataHelper.UseSystemAccentColor = value;
+                    ApplyAccentColor();
+                    MarkThemeCustomised();
+                }
+            }
+        }
+
         private Color flyoutAccentColor = ParseColor(DefaultValuesStore.FlyoutAccentColor, Colors.White);
 
         /// <summary>Tint of the glass sheen, rim light and the cursor highlight.</summary>
@@ -156,47 +263,12 @@ namespace ModernFlyouts.UI
                 if (SetProperty(ref flyoutAccentColor, value))
                 {
                     AppDataHelper.FlyoutAccentColor = value.ToString();
-                    UpdateGlassBrushes();
+                    ApplyAccentColor();
+                    MarkThemeCustomised();
                 }
             }
         }
 
-        private Color flyoutHaloColor = ParseColor(DefaultValuesStore.FlyoutHaloColor, Colors.White);
-
-        /// <summary>Colour of the outer glow around each flyout card.</summary>
-        public Color FlyoutHaloColor
-        {
-            get => flyoutHaloColor;
-            set
-            {
-                if (SetProperty(ref flyoutHaloColor, value))
-                {
-                    AppDataHelper.FlyoutHaloColor = value.ToString();
-                }
-            }
-        }
-
-        private double flyoutHaloIntensity = DefaultValuesStore.FlyoutHaloIntensity;
-
-        /// <summary>Strength of the halo, as a percentage.</summary>
-        public double FlyoutHaloIntensity
-        {
-            get => flyoutHaloIntensity;
-            set
-            {
-                if (SetProperty(ref flyoutHaloIntensity, value))
-                {
-                    AppDataHelper.FlyoutHaloIntensity = value;
-                    OnPropertyChanged(nameof(FlyoutHaloOpacity));
-                }
-            }
-        }
-
-        /// <summary>
-        /// The halo's actual opacity. Folding the glass toggle in here means the effect can stay
-        /// bound directly to the card - no style trigger needed, and no Freezable binding problems.
-        /// </summary>
-        public double FlyoutHaloOpacity => flyoutGlassEffectEnabled ? flyoutHaloIntensity / 100.0 : 0.0;
 
         private bool trayIconEnabled = DefaultValuesStore.TrayIconEnabled;
 
@@ -415,10 +487,20 @@ namespace ModernFlyouts.UI
             darkResources = themeResources.ThemeDictionaries["Dark"];
 
             FlyoutGlassEffectEnabled = AppDataHelper.FlyoutGlassEffectEnabled;
-            FlyoutAccentColor = ParseColor(AppDataHelper.FlyoutAccentColor, Colors.White);
-            FlyoutHaloColor = ParseColor(AppDataHelper.FlyoutHaloColor, Colors.White);
-            FlyoutHaloIntensity = AppDataHelper.FlyoutHaloIntensity;
-            UpdateGlassBrushes();
+            flyoutThemePreset = AppDataHelper.FlyoutThemePreset;
+            flyoutCornerRadius = AppDataHelper.FlyoutCornerRadius;
+            OnPropertyChanged(nameof(FlyoutCornerRadius));
+            UpdateCornerRadius();
+
+            useSystemAccentColor = AppDataHelper.UseSystemAccentColor;
+            OnPropertyChanged(nameof(UseSystemAccentColor));
+
+            // Seed the custom colour from whatever Windows is using, so switching to manual starts
+            // from the current look instead of jumping to some unrelated default.
+            flyoutAccentColor = ParseColor(AppDataHelper.FlyoutAccentColor, GetSystemAccentColor());
+            OnPropertyChanged(nameof(FlyoutAccentColor));
+
+            ApplyAccentColor();
             FlyoutBackgroundOpacity = AppDataHelper.FlyoutBackgroundOpacity;
 
             TrayIconManager.SetupTrayIcon();
@@ -485,6 +567,11 @@ namespace ModernFlyouts.UI
 
             UpdateFlyoutBackgroundOpacity();
             UpdateTrayIcon();
+
+            // ModernWpf recomputes its accent brushes whenever the theme changes, which puts the
+            // Windows accent back and silently undoes a custom one. Re-assert it here so the
+            // user's choice survives light/dark switches and system preference changes.
+            ApplyAccentColor();
         }
 
         private void UpdateFlyoutBackgroundOpacity()
@@ -517,7 +604,16 @@ namespace ModernFlyouts.UI
             AppDataHelper.FlyoutGlassEffectEnabled = flyoutGlassEffectEnabled;
 
             UpdateFlyoutBackgroundOpacity();
-            OnPropertyChanged(nameof(FlyoutHaloOpacity));
+        }
+
+        private static Color GetSystemAccentColor()
+        {
+            if (Application.Current?.Resources["SystemAccentColor"] is Color accent)
+            {
+                return accent;
+            }
+
+            return Color.FromRgb(0x4C, 0xC2, 0xFF);
         }
 
         private static Color ParseColor(string value, Color fallback)
@@ -539,8 +635,24 @@ namespace ModernFlyouts.UI
         }
 
         /// <summary>
-        /// Rebuilds the sheen and rim brushes from the accent colour. They are app-level resources
-        /// referenced with DynamicResource, so replacing them repaints every card.
+        /// Pushes the chosen accent into ModernWpf, which is what actually colours the slider
+        /// fills, toggles and highlights. Setting <c>ThemeManager.AccentColor</c> to null hands
+        /// control back to Windows.
+        /// </summary>
+        /// <remarks>
+        /// Tinting the glass alone was not enough: everything the eye reads as "the accent" comes
+        /// from ModernWpf's SystemAccentColor family, so a custom colour appeared to do nothing.
+        /// </remarks>
+        private void ApplyAccentColor()
+        {
+            ThemeManager.Current.AccentColor = useSystemAccentColor ? null : flyoutAccentColor;
+
+            UpdateGlassBrushes();
+        }
+
+        /// <summary>
+        /// Rebuilds the sheen and rim brushes. They are app-level resources referenced with
+        /// DynamicResource, so replacing them repaints every card.
         /// </summary>
         private void UpdateGlassBrushes()
         {
@@ -551,7 +663,10 @@ namespace ModernFlyouts.UI
                 return;
             }
 
-            Color a = flyoutAccentColor;
+            // The sheen and rim stay white: they are specular highlights - reflected light - and
+            // tinting them with the accent makes the glass look stained rather than lit. The
+            // accent shows up in the controls and in the cursor highlight instead.
+            Color a = Colors.White;
 
             Color Tint(byte alpha) => Color.FromArgb(alpha, a.R, a.G, a.B);
 

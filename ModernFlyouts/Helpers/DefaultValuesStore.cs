@@ -88,13 +88,22 @@ namespace ModernFlyouts.Helpers
         /// Tint of the glass sheen, rim light and the cursor highlight. White keeps the surface
         /// neutral; anything else colours the light catching the glass.
         /// </summary>
-        public const string FlyoutAccentColor = "#FFFFFFFF";
+        /// <summary>Follow the Windows accent colour unless the user picks their own.</summary>
+        public const bool UseSystemAccentColor = true;
 
-        /// <summary>Colour of the outer glow around each card.</summary>
-        public const string FlyoutHaloColor = "#FF9FC4FF";
+        /// <summary>Corner rounding of the flyout cards, in device-independent pixels.</summary>
+        public const double FlyoutCornerRadius = 8.0;
 
-        /// <summary>Strength of the halo, as a percentage.</summary>
-        public const double FlyoutHaloIntensity = 32.0;
+        /// <summary>Name of the last applied theme preset, or empty once anything is hand-tuned.</summary>
+        public const string FlyoutThemePreset = "";
+
+        /// <summary>
+        /// The accent used when <see cref="UseSystemAccentColor"/> is off. Only a starting point -
+        /// the real default is read from Windows on first run.
+        /// </summary>
+        public const string FlyoutAccentColor = "#FF4CC2FF";
+
+
 
         /// <summary>
         /// Link every display's brightness by default. On a dual-screen laptop the two panels are

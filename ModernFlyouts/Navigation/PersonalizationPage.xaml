@@ -16,6 +16,32 @@
         <StackPanel Margin="20,10">
             <GroupBox Header="{x:Static resx:Strings.Settings_Appearance}">
                 <ui:SimpleStackPanel Spacing="10">
+                    <TextBlock Text="{x:Static resx:Strings.Settings_ThemePreset}"
+                               Style="{DynamicResource BodyTextBlockStyle}" />
+                    <TextBlock Text="{x:Static resx:Strings.Settings_ThemePresetDescription}"
+                               Style="{DynamicResource CaptionTextBlockStyle}"
+                               Opacity="0.7" Margin="0,-4,0,4" TextWrapping="Wrap" />
+                    <ItemsControl ItemsSource="{Binding UIManager.ThemePresets}" Margin="0,0,0,8">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="ThemePresetButton_Click" Tag="{Binding}"
+                                        Margin="0,0,8,8" Padding="10,8"
+                                        ui:ControlHelper.CornerRadius="8">
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Width="18" Height="18" CornerRadius="9"
+                                                Background="{Binding Swatch}" />
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                    </ui:SimpleStackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
                     <ui:RadioButtons Header="{x:Static resx:Strings.Settings_FlyoutTheme}"
                                      ItemTemplate="{StaticResource LocalizedEnumItemTemplate}"
                                      ItemsSource="{toolkit:EnumValues Type=ui:ElementTheme}"
@@ -38,6 +64,16 @@
                             <Run Text="{Binding Path=UIManager.FlyoutBackgroundOpacity, StringFormat={}{0:#0}%}" />
                         </TextBlock>
                     </ui:SimpleStackPanel>
+                    <ui:SimpleStackPanel Spacing="10" HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Slider ui:ControlHelper.Header="{x:Static resx:Strings.Settings_FlyoutCornerRadius}"
+                                Minimum="0" Maximum="24" HorizontalAlignment="Left"
+                                AutoToolTipPlacement="TopLeft" Width="240"
+                                IsMoveToPointEnabled="True" Value="{Binding UIManager.FlyoutCornerRadius}" />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                   VerticalAlignment="Center" Margin="0,22,0,0">
+                            <Run Text="{Binding Path=UIManager.FlyoutCornerRadius, StringFormat={}{0:#0}}" />
+                        </TextBlock>
+                    </ui:SimpleStackPanel>
                     <ui:ToggleSwitch Header="{x:Static resx:Strings.Settings_FlyoutGlassEffect}"
                                      IsOn="{Binding UIManager.FlyoutGlassEffectEnabled}"
                                      OnContent="{x:Static resx:Strings.Settings_On}"
@@ -47,23 +83,13 @@
                                Opacity="0.7" Margin="0,-6,0,0" TextWrapping="Wrap"
                                Text="{x:Static resx:Strings.Settings_FlyoutGlassEffectDescription}"
                                Visibility="{Binding UIManager.IsGlassEffectSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <ui:ToggleSwitch Header="{x:Static resx:Strings.Settings_UseSystemAccentColor}"
+                                     IsOn="{Binding UIManager.UseSystemAccentColor, Mode=TwoWay}"
+                                     OnContent="{x:Static resx:Strings.Settings_On}"
+                                     OffContent="{x:Static resx:Strings.Settings_Off}" />
                     <controls:ColorSelector Header="{x:Static resx:Strings.Settings_FlyoutAccentColor}"
                                             SelectedColor="{Binding UIManager.FlyoutAccentColor, Mode=TwoWay}"
-                                            Visibility="{Binding UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <controls:ColorSelector Header="{x:Static resx:Strings.Settings_FlyoutHaloColor}"
-                                            SelectedColor="{Binding UIManager.FlyoutHaloColor, Mode=TwoWay}"
-                                            Visibility="{Binding UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <ui:SimpleStackPanel Spacing="10" HorizontalAlignment="Left" Orientation="Horizontal"
-                                         Visibility="{Binding UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Slider ui:ControlHelper.Header="{x:Static resx:Strings.Settings_FlyoutHaloIntensity}"
-                                Minimum="0" Maximum="100" HorizontalAlignment="Left"
-                                AutoToolTipPlacement="TopLeft" Width="240"
-                                IsMoveToPointEnabled="True" Value="{Binding UIManager.FlyoutHaloIntensity}" />
-                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
-                                   VerticalAlignment="Center" Margin="0,22,0,0">
-                            <Run Text="{Binding Path=UIManager.FlyoutHaloIntensity, StringFormat={}{0:#0}%}" />
-                        </TextBlock>
-                    </ui:SimpleStackPanel>
+                                            Visibility="{Binding UIManager.UseSystemAccentColor, Converter={StaticResource InvertBooleanToVisibilityConverter}}" />
                     <ui:ToggleSwitch Header="{x:Static resx:Strings.Settings_TrayIconEnabled}"
                                      IsOn="{Binding UIManager.TrayIconEnabled}"
                                      OnContent="{x:Static resx:Strings.Settings_On}"
