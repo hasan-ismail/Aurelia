@@ -449,10 +449,6 @@ namespace ModernFlyouts
 
             OnScreenFlyoutWindow.CreateWindow();
 
-            // The handle only exists now, so this is the first point the compositor material can
-            // be attached to it.
-            UIManager.UpdateFlyoutBackdrop();
-
             hookManager.RegisterCallbackForMessage((uint)WindowMessage.WM_QUERYENDSESSION,
                 (_, _, _, _) =>
                 {

@@ -286,6 +286,30 @@ namespace ModernFlyouts.Helpers
             set => SetValue(value);
         }
 
+        public static string FlyoutAccentColor
+        {
+            get => GetValue(DefaultValuesStore.FlyoutAccentColor);
+            set => SetValue(value);
+        }
+
+        public static string FlyoutHaloColor
+        {
+            get => GetValue(DefaultValuesStore.FlyoutHaloColor);
+            set => SetValue(value);
+        }
+
+        public static double FlyoutHaloIntensity
+        {
+            get => GetValue(DefaultValuesStore.FlyoutHaloIntensity);
+            set => SetValue(value);
+        }
+
+        public static bool BrightnessSyncEnabled
+        {
+            get => GetValue(DefaultValuesStore.BrightnessSyncEnabled);
+            set => SetValue(value);
+        }
+
         public static bool TrayIconEnabled
         {
             get => GetValue(DefaultValuesStore.TrayIconEnabled);

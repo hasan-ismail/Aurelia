@@ -85,6 +85,25 @@ namespace ModernFlyouts.Helpers
         public const bool FlyoutGlassEffectEnabled = true;
 
         /// <summary>
+        /// Tint of the glass sheen, rim light and the cursor highlight. White keeps the surface
+        /// neutral; anything else colours the light catching the glass.
+        /// </summary>
+        public const string FlyoutAccentColor = "#FFFFFFFF";
+
+        /// <summary>Colour of the outer glow around each card.</summary>
+        public const string FlyoutHaloColor = "#FF9FC4FF";
+
+        /// <summary>Strength of the halo, as a percentage.</summary>
+        public const double FlyoutHaloIntensity = 32.0;
+
+        /// <summary>
+        /// Link every display's brightness by default. On a dual-screen laptop the two panels are
+        /// effectively one surface, so moving them together is what you want; it can be unlinked
+        /// from the brightness flyout.
+        /// </summary>
+        public const bool BrightnessSyncEnabled = true;
+
+        /// <summary>
         /// How opaque the flyout stays when glass is on. Below roughly 0.6 the text starts to
         /// struggle against a busy wallpaper.
         /// </summary>

@@ -339,7 +339,19 @@
     <value>Glass effect</value>
   </data>
   <data name="Settings.FlyoutGlassEffectDescription" xml:space="preserve">
-    <value>Blur the desktop behind the flyout and make it translucent</value>
+    <value>Make the flyout translucent, with a light sheen and a glow</value>
+  </data>
+  <data name="BrightnessControl.SyncDisplays" xml:space="preserve">
+    <value>Link brightness across displays</value>
+  </data>
+  <data name="Settings.FlyoutAccentColor" xml:space="preserve">
+    <value>Accent colour</value>
+  </data>
+  <data name="Settings.FlyoutHaloColor" xml:space="preserve">
+    <value>Halo colour</value>
+  </data>
+  <data name="Settings.FlyoutHaloIntensity" xml:space="preserve">
+    <value>Halo strength</value>
   </data>
   <data name="Settings.FlyoutDefaultPosition" xml:space="preserve">
     <value>Flyout default position</value>

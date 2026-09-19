@@ -880,6 +880,42 @@ namespace ModernFlyouts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Link brightness across displays.
+        /// </summary>
+        public static string BrightnessControl_SyncDisplays {
+            get {
+                return ResourceManager.GetString("BrightnessControl.SyncDisplays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accent colour.
+        /// </summary>
+        public static string Settings_FlyoutAccentColor {
+            get {
+                return ResourceManager.GetString("Settings.FlyoutAccentColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Halo colour.
+        /// </summary>
+        public static string Settings_FlyoutHaloColor {
+            get {
+                return ResourceManager.GetString("Settings.FlyoutHaloColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Halo strength.
+        /// </summary>
+        public static string Settings_FlyoutHaloIntensity {
+            get {
+                return ResourceManager.GetString("Settings.FlyoutHaloIntensity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blur the desktop behind the flyout and make it translucent.
         /// </summary>
         public static string Settings_FlyoutGlassEffectDescription {

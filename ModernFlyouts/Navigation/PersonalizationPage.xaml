@@ -47,6 +47,23 @@
                                Opacity="0.7" Margin="0,-6,0,0" TextWrapping="Wrap"
                                Text="{x:Static resx:Strings.Settings_FlyoutGlassEffectDescription}"
                                Visibility="{Binding UIManager.IsGlassEffectSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <controls:ColorSelector Header="{x:Static resx:Strings.Settings_FlyoutAccentColor}"
+                                            SelectedColor="{Binding UIManager.FlyoutAccentColor, Mode=TwoWay}"
+                                            Visibility="{Binding UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <controls:ColorSelector Header="{x:Static resx:Strings.Settings_FlyoutHaloColor}"
+                                            SelectedColor="{Binding UIManager.FlyoutHaloColor, Mode=TwoWay}"
+                                            Visibility="{Binding UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <ui:SimpleStackPanel Spacing="10" HorizontalAlignment="Left" Orientation="Horizontal"
+                                         Visibility="{Binding UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Slider ui:ControlHelper.Header="{x:Static resx:Strings.Settings_FlyoutHaloIntensity}"
+                                Minimum="0" Maximum="100" HorizontalAlignment="Left"
+                                AutoToolTipPlacement="TopLeft" Width="240"
+                                IsMoveToPointEnabled="True" Value="{Binding UIManager.FlyoutHaloIntensity}" />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                   VerticalAlignment="Center" Margin="0,22,0,0">
+                            <Run Text="{Binding Path=UIManager.FlyoutHaloIntensity, StringFormat={}{0:#0}%}" />
+                        </TextBlock>
+                    </ui:SimpleStackPanel>
                     <ui:ToggleSwitch Header="{x:Static resx:Strings.Settings_TrayIconEnabled}"
                                      IsOn="{Binding UIManager.TrayIconEnabled}"
                                      OnContent="{x:Static resx:Strings.Settings_On}"

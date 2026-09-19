@@ -40,11 +40,27 @@
                 Width="{DynamicResource FlyoutWidth}"
                 Visibility="{Binding PrimaryContentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid>
-                    <Border Background="{DynamicResource FlyoutBackground}"
-                            CornerRadius="{DynamicResource FlyoutCornerRadius}"/>
+                    <Border CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            Background="{DynamicResource FlyoutBackground}">
+                        <!-- Halo: an outer glow that makes the card read as a lit pane of glass
+                             above the desktop rather than a flat panel. Colour and strength are
+                             user settings; the opacity binding folds in the glass toggle, so the
+                             effect can live directly on the element (a Setter.Value would freeze
+                             the Freezable and break these bindings). -->
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="30" ShadowDepth="0"
+                                Color="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutHaloColor}"
+                                Opacity="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutHaloOpacity}" />
+                        </Border.Effect>
+                    </Border>
                     <Border Background="{DynamicResource FlyoutGlassSheenBrush}"
                             CornerRadius="{DynamicResource FlyoutCornerRadius}"
                             IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <!-- Cursor refraction: a highlight that follows the pointer across the card. -->
+                    <Border x:Name="PrimaryRefraction" x:FieldModifier="private" CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            media:CursorRefractionHelper.IsEnabled="True"
+                            media:CursorRefractionHelper.AccentColor="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutAccentColor}"
                             Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <StackPanel>
                         <ContentControl x:Name="TopBarHost" x:FieldModifier="private" />
@@ -71,11 +87,27 @@
                 Width="{DynamicResource FlyoutWidth}"
                 Visibility="{Binding SecondaryContentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid>
-                    <Border Background="{DynamicResource FlyoutBackground}"
-                            CornerRadius="{DynamicResource FlyoutCornerRadius}"/>
+                    <Border CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            Background="{DynamicResource FlyoutBackground}">
+                        <!-- Halo: an outer glow that makes the card read as a lit pane of glass
+                             above the desktop rather than a flat panel. Colour and strength are
+                             user settings; the opacity binding folds in the glass toggle, so the
+                             effect can live directly on the element (a Setter.Value would freeze
+                             the Freezable and break these bindings). -->
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="30" ShadowDepth="0"
+                                Color="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutHaloColor}"
+                                Opacity="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutHaloOpacity}" />
+                        </Border.Effect>
+                    </Border>
                     <Border Background="{DynamicResource FlyoutGlassSheenBrush}"
                             CornerRadius="{DynamicResource FlyoutCornerRadius}"
                             IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <!-- Cursor refraction: a highlight that follows the pointer across the card. -->
+                    <Border x:Name="SecondaryRefraction" x:FieldModifier="private" CornerRadius="{DynamicResource FlyoutCornerRadius}"
+                            media:CursorRefractionHelper.IsEnabled="True"
+                            media:CursorRefractionHelper.AccentColor="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutAccentColor}"
                             Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <controls:CrossFadeContentControl Content="{Binding SecondaryContent}" />
                     <Border
