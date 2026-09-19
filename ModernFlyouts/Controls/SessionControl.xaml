@@ -9,6 +9,7 @@
              xmlns:input="clr-namespace:ModernFlyouts.Input"
              xmlns:designTime="clr-namespace:ModernFlyouts.DesignTime"
              xmlns:local="clr-namespace:ModernFlyouts"
+             xmlns:behaviors="clr-namespace:ModernFlyouts.Behaviors"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance designTime:MockMediaSession}"
              Width="{DynamicResource FlyoutWidth}" Height="{DynamicResource DefaultSessionControlHeight}" VerticalAlignment="Top">
     <Border CornerRadius="{DynamicResource FlyoutCornerRadius}">
@@ -19,8 +20,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <!-- header (art, title, artist) / transport controls / seek bar.
+                     There used to be only two rows while children asked for Grid.Row="2", so the
+                     seek bar and the controls were clamped into the same row and overlapped -
+                     which is why a chevron had to toggle between them. -->
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Border Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0.5" CornerRadius="{DynamicResource FlyoutCornerRadius}" ClipToBounds="True"
@@ -77,8 +83,12 @@
                     <Border CornerRadius="{DynamicResource FlyoutCornerRadius}" Background="#333333" />
                     <Border CornerRadius="{DynamicResource FlyoutCornerRadius}">
                         <Border.Background>
+                            <!-- HighQuality (Fant), not NearestNeighbor: album art arrives far larger
+                                 than this 64px box - 544x544 from Firefox, for instance - and
+                                 nearest-neighbour downscaling threw away most of it and left the
+                                 thumbnail visibly blocky. -->
                             <ImageBrush x:Name="ThumbnailImageBrush" ImageSource="{Binding Thumbnail}"
-                                        Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                        Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
                         </Border.Background>
                     </Border>
                 </Grid>
@@ -111,39 +121,34 @@
                 </Button>-->
             </Grid>
 
-            <Grid Margin="24,10" Grid.Row="1" Grid.ColumnSpan="3"
+            <!-- Seek bar. Always on show now: the chevron that used to swap it with the
+                 transport controls is gone, and so is the read-only progress bar that stood in
+                 for it while it was hidden. -->
+            <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="24,0,24,14" VerticalAlignment="Center"
                   Visibility="{Binding IsPlaybackPositionEnabled,
                       Converter={StaticResource BooleanToVisibilityConverter}}"
                   IsEnabled="{Binding IsPlaybackPositionEnabled}">
-                <Grid VerticalAlignment="Center"
-                      Visibility="{Binding ElementName=TimelineInfoButton, Path=IsChecked,
-                          Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center"
-                        Text="{Binding PlaybackPosition, Converter={StaticResource TimeSpanToStringConverter}}" />
-                    <Slider Grid.Column="1" IsMoveToPointEnabled="True" Margin="10,0"
-                        IsEnabled="{Binding IsPlaybackPositionEnabled}"
-                        Minimum="{Binding TimelineStartTime, Mode=OneWay, Converter={StaticResource TimeSpanToNumberConverter}}"
-                        Maximum="{Binding TimelineEndTime, Mode=OneWay, Converter={StaticResource TimeSpanToNumberConverter}}"
-                        Value="{Binding PlaybackPosition, Converter={StaticResource TimeSpanToNumberConverter}}" />
-                    <TextBlock Grid.Column="2" VerticalAlignment="Center"
-                        Text="{Binding TimelineEndTime, Converter={StaticResource TimeSpanToStringConverter}}" />
-                </Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Opacity="0.75" FontSize="11"
+                    Style="{DynamicResource CaptionTextBlockStyle}"
+                    Text="{Binding PlaybackPosition, Converter={StaticResource TimeSpanToStringConverter}}" />
+                <Slider Grid.Column="1" IsMoveToPointEnabled="True" Margin="10,0"
+                    VerticalAlignment="Center"
+                    behaviors:SliderThumbHoverBehavior.IsEnabled="True"
+                    IsEnabled="{Binding IsPlaybackPositionEnabled}"
+                    Minimum="{Binding TimelineStartTime, Mode=OneWay, Converter={StaticResource TimeSpanToNumberConverter}}"
+                    Maximum="{Binding TimelineEndTime, Mode=OneWay, Converter={StaticResource TimeSpanToNumberConverter}}"
+                    Value="{Binding PlaybackPosition, Converter={StaticResource TimeSpanToNumberConverter}}" />
+                <TextBlock Grid.Column="2" VerticalAlignment="Center" Opacity="0.75" FontSize="11"
+                    Style="{DynamicResource CaptionTextBlockStyle}"
+                    Text="{Binding TimelineEndTime, Converter={StaticResource TimeSpanToStringConverter}}" />
             </Grid>
 
-            <ui:ProgressBar Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="30,6"
-                            Visibility="{Binding IsTimelinePropertiesEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Minimum="{Binding TimelineStartTime, Mode=OneWay, Converter={StaticResource TimeSpanToNumberConverter}}"
-                            Maximum="{Binding TimelineEndTime, Mode=OneWay, Converter={StaticResource TimeSpanToNumberConverter}}"
-                            Value="{Binding PlaybackPosition, Converter={StaticResource TimeSpanToNumberConverter}}" />
-
-            <Grid Grid.ColumnSpan="3" Grid.Row="2"
-                  Visibility="{Binding ElementName=TimelineInfoButton, Path=IsChecked,
-                          Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+            <Grid Grid.ColumnSpan="3" Grid.Row="1">
                 <ui:SplitView x:Name="ControlsSplitView" VerticalAlignment="Center"
                               OpenPaneLength="{DynamicResource FlyoutWidth}" PaneBackground="Transparent"
                               DisplayMode="Inline" IsPaneOpen="False">
@@ -194,15 +199,6 @@
                     <ui:FontIcon Glyph="{x:Static utils:CommonGlyphs.More}" FontSize="16" />
                 </ToggleButton>
             </Grid>
-
-            <ToggleButton x:Name="TimelineInfoButton" Visibility="{Binding IsPlaybackPositionEnabled,
-                              Converter={StaticResource BooleanToVisibilityConverter}}"
-                          Grid.Row="1" Grid.ColumnSpan="3" Padding="0" ui:ControlHelper.CornerRadius="6"
-                          HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                          ToolTip="{x:Static resx:Strings.SessionControl_TimelineInfo}" Margin="4"
-                          Style="{DynamicResource DefaultToggleButtonStyle}" Width="20" Height="20">
-                <ui:FontIcon Glyph="{x:Static utils:CommonGlyphs.ChevronUp}" FontSize="10" />
-            </ToggleButton>
         </Grid>
     </Border>
 </UserControl>
