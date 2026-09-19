@@ -5,13 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="http://schemas.modernwpf.com/2019"
              xmlns:local="clr-namespace:ModernFlyouts.Controls"
+             xmlns:behaviors="clr-namespace:ModernFlyouts.Behaviors"
              xmlns:rootui="clr-namespace:ModernFlyouts.UI"
              xmlns:toolkit="http://schemas.modernwpf.com/toolkit"
              xmlns:utils="clr-namespace:ModernFlyouts.Utilities"
+             xmlns:resx="clr-namespace:ModernFlyouts.Properties"
              xmlns:display="clr-namespace:ModernFlyouts.Core.Display;assembly=ModernFlyouts.Core"
              mc:Ignorable="d" d:DesignWidth="354"
              MaxHeight="216" DataContext="{x:Static display:BrightnessManager.Instance}">
     
+    <Grid>
     <local:ContentScrollViewer x:Name="ContentScrollViewer"
                                ContentHeight="48"
                                ContentWidth="{x:Static rootui:UIManager.FlyoutWidth}"
@@ -57,7 +60,8 @@
 
                             <Slider x:Name="BrightnessSlider" Maximum="{Binding Maximum}"
                                     Minimum="{Binding Minimum}" Grid.Column="1" VerticalAlignment="Center" Margin="8,0"
-                                    SmallChange="0.01" Value="{Binding Brightness}" IsMoveToPointEnabled="True" />
+                                    SmallChange="0.01" Value="{Binding Brightness}" IsMoveToPointEnabled="True"
+                                    behaviors:SliderThumbHoverBehavior.IsEnabled="True" />
 
                             <TextBlock x:Name="textVal" Grid.Column="2" HorizontalAlignment="Center" Margin="6"
                                        Style="{DynamicResource SubtitleTextBlockStyle}"
@@ -69,4 +73,26 @@
         </ItemsControl>
     </local:ContentScrollViewer>
 
+        <!-- Link / unlink every display's brightness. Only meaningful with more than one display,
+             so it stays hidden on a single-screen machine. -->
+        <ToggleButton x:Name="SyncToggle" IsChecked="{Binding IsSyncEnabled, Mode=TwoWay}"
+                      Visibility="{Binding CanSync, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      HorizontalAlignment="Right" VerticalAlignment="Top"
+                      Margin="0,6,10,0" Width="28" Height="28" Padding="0"
+                      ui:ControlHelper.CornerRadius="6"
+                      Style="{DynamicResource DefaultToggleButtonStyle}"
+                      ToolTip="{x:Static resx:Strings.BrightnessControl_SyncDisplays}">
+            <ui:FontIcon FontSize="13">
+                <ui:FontIcon.Glyph>
+                    <Binding Path="IsSyncEnabled">
+                        <Binding.Converter>
+                            <toolkit:BoolToObjectConverter
+                                TrueValue="{x:Static utils:CommonGlyphs.LinkedDisplays}"
+                                FalseValue="{x:Static utils:CommonGlyphs.UnlinkedDisplays}" />
+                        </Binding.Converter>
+                    </Binding>
+                </ui:FontIcon.Glyph>
+            </ui:FontIcon>
+        </ToggleButton>
+    </Grid>
 </UserControl>

@@ -4,6 +4,12 @@
     {
         public const string ChevronLeft = "\uE00E";
 
+        /// <summary>Displays whose brightness moves together. (A plain "Link" already exists below.)</summary>
+        public const string LinkedDisplays = "\uE71B";
+
+        /// <summary>Displays adjusted independently.</summary>
+        public const string UnlinkedDisplays = "\uE77B";
+
         public const string ChevronRight = "\uE00F";
 
         public const string ChevronUp = "\uE010";

@@ -19,6 +19,12 @@ namespace ModernFlyouts
 
             BrightnessManager.Initialize();
 
+            // Restore the user's link/unlink choice, and keep it saved as they toggle it from the
+            // lock button in the flyout.
+            BrightnessManager.Instance.IsSyncEnabled = AppDataHelper.BrightnessSyncEnabled;
+            BrightnessManager.Instance.SyncEnabledChanged += (_, _) =>
+                AppDataHelper.BrightnessSyncEnabled = BrightnessManager.Instance.IsSyncEnabled;
+
             brightnessControl = new BrightnessControl();
 
             PrimaryContent = brightnessControl;

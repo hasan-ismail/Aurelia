@@ -1,4 +1,5 @@
-﻿using ModernFlyouts.Core.Utilities;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ModernFlyouts.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,7 @@ using static ModernFlyouts.Core.Interop.NativeMethods;
 
 namespace ModernFlyouts.Core.Display
 {
-    public class BrightnessManager
+    public class BrightnessManager : ObservableObject
     {
         private BrightnessWatcher brightnessWatcher;
         private byte[] validWMIBrightnessLevels;
@@ -22,8 +23,141 @@ namespace ModernFlyouts.Core.Display
 
         public ObservableCollection<BrightnessController> BrightnessControllers { get; } = new();
 
+        /// <summary>
+        /// True while a sync is propagating, so the resulting changes on the other controllers
+        /// don't bounce back and start their own propagation.
+        /// </summary>
+        private bool isSyncing;
+
+        private bool isSyncEnabled = true;
+
+        /// <summary>
+        /// Moves every display's brightness together. Defaults on, which is what you want on a
+        /// dual-screen laptop where the two panels are really one surface; turn it off to set each
+        /// display independently.
+        /// </summary>
+        public bool IsSyncEnabled
+        {
+            get => isSyncEnabled;
+            set
+            {
+                if (SetProperty(ref isSyncEnabled, value))
+                {
+                    SyncEnabledChanged?.Invoke(this, EventArgs.Empty);
+
+                    if (value)
+                    {
+                        // Re-linking should bring the others to the display the user last touched,
+                        // rather than leaving them wherever they drifted while unlinked.
+                        SyncFrom(lastChanged ?? BrightnessControllers.FirstOrDefault());
+                    }
+                }
+            }
+        }
+
+        /// <summary>Raised when <see cref="IsSyncEnabled"/> changes, so callers can persist it.</summary>
+        public event EventHandler SyncEnabledChanged;
+
+        /// <summary>Only meaningful when there is more than one display to link.</summary>
+        public bool CanSync => BrightnessControllers.Count > 1;
+
+        private BrightnessController lastChanged;
+
+        private void AttachSync(BrightnessController controller)
+        {
+            controller.PropertyChanged += Controller_PropertyChanged;
+        }
+
+        private void DetachSync(BrightnessController controller)
+        {
+            controller.PropertyChanged -= Controller_PropertyChanged;
+        }
+
+        private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(BrightnessController.Brightness) || sender is not BrightnessController source)
+            {
+                return;
+            }
+
+            lastChanged = source;
+
+            if (isSyncEnabled && !isSyncing)
+            {
+                SyncFrom(source);
+            }
+        }
+
+        /// <summary>
+        /// Copies <paramref name="source"/>'s level onto every other display, as a proportion of
+        /// each one's own range - panels don't necessarily share the same scale.
+        /// </summary>
+        private void SyncFrom(BrightnessController source)
+        {
+            if (source == null || isSyncing)
+            {
+                return;
+            }
+
+            double sourceRange = source.Maximum - source.Minimum;
+
+            if (sourceRange <= 0)
+            {
+                return;
+            }
+
+            double fraction = (source.Brightness - source.Minimum) / sourceRange;
+
+            isSyncing = true;
+
+            try
+            {
+                foreach (BrightnessController other in BrightnessControllers)
+                {
+                    if (ReferenceEquals(other, source))
+                    {
+                        continue;
+                    }
+
+                    double target = other.Minimum + (fraction * (other.Maximum - other.Minimum));
+
+                    if (Math.Abs(other.Brightness - target) > 0.5)
+                    {
+                        other.Brightness = target;
+                    }
+                }
+            }
+            finally
+            {
+                isSyncing = false;
+            }
+        }
+
         private BrightnessManager()
         {
+            // Hook the collection once rather than every Add/Remove site, so newly detected
+            // displays are wired into brightness sync automatically.
+            BrightnessControllers.CollectionChanged += (_, e) =>
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (BrightnessController c in e.OldItems)
+                    {
+                        DetachSync(c);
+                    }
+                }
+
+                if (e.NewItems != null)
+                {
+                    foreach (BrightnessController c in e.NewItems)
+                    {
+                        AttachSync(c);
+                    }
+                }
+
+                OnPropertyChanged(nameof(CanSync));
+            };
+
             validWMIBrightnessLevels = GetValidWMIBrightnessLevels();
 
             if (AreWMIMethodsSupported())
