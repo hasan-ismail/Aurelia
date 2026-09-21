@@ -85,7 +85,7 @@ namespace Aurelia.Controls
                 nameof(Count),
                 typeof(int),
                 typeof(JellyfishLayer),
-                new PropertyMetadata(6, (d, _) => { var l = (JellyfishLayer)d; l.Populate(); l.Render(); }));
+                new PropertyMetadata(7, (d, _) => { var l = (JellyfishLayer)d; l.Populate(); l.Render(); }));
 
         /// <summary>Upper bound on how many drift through at once; the layer's size sets the rest.</summary>
         public int Count
@@ -160,14 +160,15 @@ namespace Aurelia.Controls
             {
                 m.Y -= m.Speed * delta;
 
-                // The arms trail a long way below the bell, so it is only truly gone once the
-                // longest tentacle has cleared the top - otherwise strands pop out of existence.
+                // Recycled as soon as the edge fade has taken it to nothing, rather than after
+                // the last tentacle clears the top. Waiting would park it invisibly off-card for
+                // most of its life, leaving the strip empty.
                 double bh = 13 * m.Scale;
 
-                if (m.Y < -bh * 8)
+                if (m.Y < -bh * 0.8)
                 {
-                    m.Y = ActualHeight + bh * 2.5;
-                    m.X = random.NextDouble() * Math.Max(1, ActualWidth);
+                    m.Y = ActualHeight + bh * 2.2;
+                    m.X = RandomX(m);
                 }
             }
 
@@ -188,19 +189,17 @@ namespace Aurelia.Controls
             // A slider card is a short, wide strip, so the bell is sized off the height and the
             // count off the width. The arms are far longer than the card is tall and simply get
             // clipped - a jellyfish passing through the frame reads better than one shrunk to fit.
-            double fit = Math.Clamp(h / 95.0, 0.30, 1.4);
-            int count = Math.Clamp((int)Math.Round(w / 100.0), 1, Count);
+            double fit = Math.Clamp(h / 105.0, 0.28, 1.3);
+            int count = Math.Clamp((int)Math.Round(w / 85.0), 1, Count);
 
             for (int i = 0; i < count; i++)
             {
                 double bh = 13 * fit;
-
-                medusae.Add(new Medusa
+                var m = new Medusa
                 {
-                    X = (i + 0.5) / count * w + (random.NextDouble() - 0.5) * w * 0.2,
-                    // Spread over the whole travel, including the stretch below the card, so they
-                    // do not all arrive in a row on the first frame.
-                    Y = -bh * 8 + random.NextDouble() * (h + bh * 10),
+                    // Spread over the whole travel, so they do not all arrive in a row on the
+                    // first frame.
+                    Y = -bh * 0.8 + random.NextDouble() * (h + bh * 3),
                     Scale = fit * (0.78 + random.NextDouble() * 0.5),
                     Speed = 7 + random.NextDouble() * 10,
                     SwayAmplitude = 3 + random.NextDouble() * 7,
@@ -209,8 +208,28 @@ namespace Aurelia.Controls
                     Phase = random.NextDouble() * Math.PI * 2,
                     Alpha = 0.50 + random.NextDouble() * 0.30,
                     Lean = (random.NextDouble() - 0.5) * 0.5
-                });
+                };
+
+                m.X = RandomX(m);
+                medusae.Add(m);
             }
+        }
+
+        /// <summary>
+        /// A horizontal position that keeps the whole bell clear of the left and right borders.
+        /// </summary>
+        /// <remarks>
+        /// Vertically a jellyfish fades as it crosses an edge, but horizontally it just drifts, so
+        /// one spawned near a side would sit sliced in half by the border for its entire life.
+        /// </remarks>
+        private double RandomX(Medusa m)
+        {
+            double inset = 17 * m.Scale * 1.7 + m.SwayAmplitude;
+            double w = ActualWidth;
+
+            return w <= inset * 2
+                ? w / 2
+                : inset + random.NextDouble() * (w - inset * 2);
         }
 
         private void Render()
@@ -256,7 +275,20 @@ namespace Aurelia.Controls
             double bw = 17 * m.Scale * (1 + pulse * 0.13);
             double bh = 13 * m.Scale * (1 - pulse * 0.17);
 
-            double a = m.Alpha;
+            // The card is a short strip, so an animal is always near one edge of it. Rather
+            // than let the border slice a bell in half, each one dissolves as it enters from the
+            // bottom and again as it leaves through the top.
+            double bellTop = cy - bh * 2.1;
+            double bellBottom = cy + bh * 0.5;
+            double fadeIn = Math.Clamp((ActualHeight - bellTop) / (bh * 3.0), 0, 1);
+            double fadeOut = Math.Clamp(bellBottom / (bh * 3.0), 0, 1);
+
+            double a = m.Alpha * Math.Min(fadeIn, fadeOut);
+
+            if (a <= 0.01)
+            {
+                return;
+            }
 
             // Back to front: veils, then the fine tentacles, then the arms over them, then
             // the bell last so its rim reads cleanly against everything it overlaps.
@@ -364,7 +396,7 @@ namespace Aurelia.Controls
             {
                 double offset = (r - (ribbons - 1) / 2.0) / Math.Max(1, (ribbons - 1) / 2.0);
                 double rootX = cx + offset * bw * 0.45;
-                double length = bh * (3.2 + r % 2 * 1.0);
+                double length = bh * (2.8 + r % 2 * 0.9);
                 double phase = m.Phase - r * 0.7;
 
                 var left = new Point[samples];
@@ -410,8 +442,8 @@ namespace Aurelia.Controls
                     GradientStops = new GradientStopCollection
                     {
                         new GradientStop(Shade(a * 0.72, 0.30), 0.0),
-                        new GradientStop(Shade(a * 0.40, 0.10), 0.45),
-                        new GradientStop(Shade(0.0), 1.0)
+                        new GradientStop(Shade(a * 0.38, 0.10), 0.40),
+                        new GradientStop(Shade(0.0), 0.85)
                     }
                 };
                 fill.Freeze();
@@ -425,7 +457,21 @@ namespace Aurelia.Controls
             const int tentacles = 5;
             const int samples = 14;
 
-            var pen = new Pen(new SolidColorBrush(Shade(a * 0.45, 0.15)), Math.Max(0.8, 1.3 * m.Scale))
+            // Mapped to each tentacle's own bounds, so every strand fades from root to tip.
+            var strand = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                GradientStops = new GradientStopCollection
+                {
+                    new GradientStop(Shade(a * 0.50, 0.15), 0.0),
+                    new GradientStop(Shade(a * 0.28, 0.10), 0.45),
+                    new GradientStop(Shade(0.0), 0.9)
+                }
+            };
+            strand.Freeze();
+
+            var pen = new Pen(strand, Math.Max(0.8, 1.3 * m.Scale))
             {
                 StartLineCap = PenLineCap.Round,
                 EndLineCap = PenLineCap.Round
@@ -436,7 +482,7 @@ namespace Aurelia.Controls
             {
                 double offset = (t - (tentacles - 1) / 2.0) / ((tentacles - 1) / 2.0);
                 double rootX = cx + offset * bw * 0.85;
-                double length = bh * (4.2 + (t % 3) * 1.0);
+                double length = bh * (3.6 + (t % 3) * 0.9);
                 double phase = m.Phase - t * 0.45;
 
                 var path = new StreamGeometry();
