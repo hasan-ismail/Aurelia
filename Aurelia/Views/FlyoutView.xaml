@@ -46,6 +46,16 @@
                             CornerRadius="{DynamicResource FlyoutCornerRadius}"
                             IsHitTestVisible="False"
                             Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutGlassEffectEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <!-- Jellyfish sit between the glass surface and the content, so they read as
+                         being inside the flyout rather than painted on top of it.
+                         Slider card only: the media card already has album art as its backdrop, and
+                         two moving backgrounds behind one another just muddle each other. -->
+                    <Border CornerRadius="{DynamicResource FlyoutCornerRadius}" ClipToBounds="True"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutJellyfishEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <controls:JellyfishLayer
+                            Tint="{Binding Source={x:Static local:FlyoutHandler.Instance}, Path=UIManager.FlyoutAccentColor}" />
+                    </Border>
                     <!-- Cursor refraction: a highlight that follows the pointer across the card. -->
                     <Border x:Name="PrimaryRefraction" x:FieldModifier="private" CornerRadius="{DynamicResource FlyoutCornerRadius}"
                             media:CursorRefractionHelper.IsEnabled="True"

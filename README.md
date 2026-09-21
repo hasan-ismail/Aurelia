@@ -37,8 +37,9 @@ and Exit.
 
 ## Themes
 
-Nine built-in looks — **Classic, Frost, Midnight, Aurora, Ember, Nord, Rose, Vapor, Mono** — each
-setting an accent colour, how solid the glass is, how round the corners are, and light or dark.
+Ten built-in looks — **Classic, Frost, Midnight, Aurora, Ember, Nord, Rose, Vapor, Mono,
+Jellyfish** — each setting an accent colour, how solid the glass is, how round the corners are, and
+light or dark.
 
 A theme is a starting point, not a cage. Pick one, then change anything you like: accent colour by
 swatch or hex, glass opacity, corner roundness, light or dark. The moment you adjust something it
@@ -52,6 +53,12 @@ simply reads as Custom.
 | ![Aurora](docs/images/themes/aurora.png) | ![Ember](docs/images/themes/ember.png) | ![Nord](docs/images/themes/nord.png) |
 | **Rose** | **Vapor** | **Mono** |
 | ![Rose](docs/images/themes/rose.png) | ![Vapor](docs/images/themes/vapor.png) | ![Mono](docs/images/themes/mono.png) |
+
+**Jellyfish** is the odd one out: aqua glass with jellyfish quietly drifting up through the volume
+and brightness sliders. They're drawn live rather than played back from a video, so they cost
+almost nothing, and they stay still if you've turned Windows animations off.
+
+![Jellyfish](docs/images/themes/jellyfish.png)
 
 Pick a theme, then tune it — or ignore the presets entirely and set the accent by hex:
 

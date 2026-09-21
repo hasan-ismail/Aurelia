@@ -39,7 +39,7 @@ bool load_hostfxr()
 HRESULT LoadCLR()
 {
     auto host_path = GetExecutableDir() + L"\\";
-    auto exec_path = host_path + L"Aurelia.dll";
+    auto exec_path = host_path + L"AureliaFlyouts.dll";
 
     if (!load_hostfxr())
     {
@@ -65,7 +65,7 @@ HRESULT LoadCLR()
     {
         const char_t** dotnet_args = new const char_t * [argc + 1];
 
-        dotnet_args[0] = exec_path.c_str(); // The 1st argument has to be the path of the main Aurelia.dll (.NET) library
+        dotnet_args[0] = exec_path.c_str(); // The 1st argument has to be the path of the main AureliaFlyouts.dll (.NET) library
         for (size_t i = 0; i < argc; i++)
             dotnet_args[i + 1] = *(argv + i); // Subsequent arguments are passed after that
 

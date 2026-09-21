@@ -6,6 +6,13 @@
     <RuntimeIdentifiers>win-x64;win-x86;win-arm64</RuntimeIdentifiers>
     <UseWPF>true</UseWPF>
     <OutputType>WinExe</OutputType>
+
+    <!-- Not "Aurelia": Discord ships a database of game executables and there is a game called
+         Aurelia registered as both "aurelia/aurelia.exe" and a bare "aurelia.exe". Matching either
+         made Discord announce this app as a game someone was playing. Renaming only the binary
+         breaks the match regardless of which folder it is installed into; every user-visible
+         name - Start Menu entry, window titles, About, the installer - is still Aurelia. -->
+    <AssemblyName>AureliaFlyouts</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <ApplicationManifest>app.manifest</ApplicationManifest>

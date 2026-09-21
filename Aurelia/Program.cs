@@ -10,7 +10,12 @@ namespace Aurelia
     public class Program
     {
         public const string AppName = "Aurelia";
-        public const string AppHostName = "Aurelia";
+        /// <summary>
+        /// Filename of the running executable, without extension. Derived rather than hardcoded so
+        /// it cannot go stale if the assembly is renamed.
+        /// </summary>
+        public static string AppHostName { get; } =
+            System.IO.Path.GetFileNameWithoutExtension(Environment.ProcessPath) ?? "AureliaFlyouts";
 
         [STAThread]
         private static void Main(string[] args)

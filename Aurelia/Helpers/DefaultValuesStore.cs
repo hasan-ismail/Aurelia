@@ -98,6 +98,9 @@ namespace Aurelia.Helpers
         /// <summary>Corner rounding of the flyout cards, in device-independent pixels.</summary>
         public const double FlyoutCornerRadius = 8.0;
 
+        /// <summary>Whether jellyfish drift behind the flyout's content.</summary>
+        public const bool FlyoutJellyfishEnabled = false;
+
         /// <summary>Name of the last applied theme preset, or empty once anything is hand-tuned.</summary>
         public const string FlyoutThemePreset = "";
 

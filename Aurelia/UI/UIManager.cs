@@ -167,6 +167,22 @@ namespace Aurelia.UI
             }
         }
 
+        private bool flyoutJellyfishEnabled = DefaultValuesStore.FlyoutJellyfishEnabled;
+
+        /// <summary>Whether jellyfish drift behind the flyout's content.</summary>
+        public bool FlyoutJellyfishEnabled
+        {
+            get => flyoutJellyfishEnabled;
+            set
+            {
+                if (SetProperty(ref flyoutJellyfishEnabled, value))
+                {
+                    AppDataHelper.FlyoutJellyfishEnabled = value;
+                    MarkThemeCustomised();
+                }
+            }
+        }
+
         private double flyoutCornerRadius = DefaultValuesStore.FlyoutCornerRadius;
 
         /// <summary>Corner rounding of the flyout cards.</summary>
@@ -223,6 +239,8 @@ namespace Aurelia.UI
                 FlyoutBackgroundOpacity = preset.BackgroundOpacity;
                 FlyoutCornerRadius = preset.CornerRadius;
                 FlyoutTheme = preset.Theme;
+                FlyoutJellyfishEnabled = preset.Jellyfish;
+
             }
             finally
             {
@@ -489,6 +507,8 @@ namespace Aurelia.UI
             FlyoutGlassEffectEnabled = AppDataHelper.FlyoutGlassEffectEnabled;
             flyoutThemePreset = AppDataHelper.FlyoutThemePreset;
             flyoutCornerRadius = AppDataHelper.FlyoutCornerRadius;
+            flyoutJellyfishEnabled = AppDataHelper.FlyoutJellyfishEnabled;
+            OnPropertyChanged(nameof(FlyoutJellyfishEnabled));
             OnPropertyChanged(nameof(FlyoutCornerRadius));
             UpdateCornerRadius();
 

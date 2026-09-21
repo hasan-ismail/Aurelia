@@ -298,6 +298,12 @@ namespace Aurelia.Helpers
             set => SetValue(value);
         }
 
+        public static bool FlyoutJellyfishEnabled
+        {
+            get => GetValue(DefaultValuesStore.FlyoutJellyfishEnabled);
+            set => SetValue(value);
+        }
+
         public static string FlyoutThemePreset
         {
             get => GetValue(DefaultValuesStore.FlyoutThemePreset);

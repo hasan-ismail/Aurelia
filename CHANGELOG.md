@@ -2,6 +2,30 @@
 
 All notable changes to Aurelia. Verified on **Windows 11 build 26200 (25H2), x64**, on .NET 9.
 
+## 0.17.0
+
+**Discord no longer thinks Aurelia is a game.** Discord matches running programs against a public
+list of detectable games, and that list has an unrelated game called Aurelia registered under
+`aurelia.exe` — so anyone with Discord open was shown as playing it. The program file is now named
+`AureliaFlyouts.exe`, which is not on the list. Nothing else changes: the app, the tray icon, the
+Start Menu entry and your settings are all still Aurelia. If you had added the old name as a game
+in Discord's activity settings, you can remove it.
+
+**New theme: Jellyfish.** Aqua-teal glass with jellyfish drifting up through the volume and
+brightness sliders. They are drawn as live vector art rather than a video, so they are cheap to
+run, they follow whatever accent colour you pick, and they hold still if you have turned Windows
+animations off. The media player is left alone — album art is backdrop enough there.
+
+## 0.16.0
+
+The top bar is collapsed by default, so the flyout opens as just the controls. You can still bring
+it back from Settings. Added a screenshot gallery of every theme to the README.
+
+## 0.15.0
+
+Relicensed under the **AGPL-3.0**. The MIT notices for the projects Aurelia grew out of are kept in
+`NOTICE.md` and continue to govern those portions.
+
 ## 0.14.0
 
 Renamed the project to **Aurelia**. Namespaces, assemblies, the installer and the settings location

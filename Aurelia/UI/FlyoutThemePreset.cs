@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Media;
 using ModernWpf;
 
@@ -20,13 +20,15 @@ namespace Aurelia.UI
             Color accent,
             double backgroundOpacity,
             double cornerRadius,
-            ElementTheme theme = ElementTheme.Default)
+            ElementTheme theme = ElementTheme.Default,
+            bool jellyfish = false)
         {
             Name = name;
             Accent = accent;
             BackgroundOpacity = backgroundOpacity;
             CornerRadius = cornerRadius;
             Theme = theme;
+            Jellyfish = jellyfish;
         }
 
         public string Name { get; }
@@ -40,6 +42,9 @@ namespace Aurelia.UI
 
         /// <summary>Light, dark, or follow the system.</summary>
         public ElementTheme Theme { get; }
+
+        /// <summary>Whether this preset swims jellyfish behind the flyout's content.</summary>
+        public bool Jellyfish { get; }
 
         /// <summary>A brush for the preset's swatch in the settings list.</summary>
         public Brush Swatch => new SolidColorBrush(Accent);
@@ -75,7 +80,11 @@ namespace Aurelia.UI
             new("Vapor",     Color.FromRgb(0xB0, 0x7F, 0xFF),  70, 20, ElementTheme.Dark),
 
             // No colour at all: a deliberately plain, square, opaque look.
-            new("Mono",      Color.FromRgb(0xC8, 0xC8, 0xC8), 100,  2)
+            new("Mono",      Color.FromRgb(0xC8, 0xC8, 0xC8), 100,  2),
+
+            // The one theme with something living in it: aqua glass with jellyfish drifting
+            // upward behind the content. Kept translucent so they read through the surface.
+            new("Jellyfish", Color.FromRgb(0x3F, 0xE0, 0xCB),  62, 22, ElementTheme.Dark, jellyfish: true)
         };
     }
 }

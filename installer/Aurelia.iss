@@ -21,7 +21,7 @@
 #define AppName       "Aurelia"
 #define AppPublisher  "hasan-ismail"
 #define AppUrl        "https://github.com/hasan-ismail/Aurelia"
-#define AppExe        "Aurelia.exe"
+#define AppExe        "AureliaFlyouts.exe"
 
 [Setup]
 AppId={{7C864741-5192-4753-B124-8599487283BC}
