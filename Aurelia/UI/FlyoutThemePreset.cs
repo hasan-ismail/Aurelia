@@ -84,7 +84,7 @@ namespace Aurelia.UI
 
             // The one theme with something living in it: aqua glass with jellyfish drifting
             // upward behind the content. Kept translucent so they read through the surface.
-            new("Jellyfish", Color.FromRgb(0x3F, 0xE0, 0xCB),  62, 22, ElementTheme.Dark, jellyfish: true)
+            new("Jellyfish", Color.FromRgb(0x45, 0xD8, 0xF2),  62, 22, ElementTheme.Dark, jellyfish: true)
         };
     }
 }

@@ -67,7 +67,7 @@ namespace Aurelia.Controls
                 nameof(Tint),
                 typeof(Color),
                 typeof(JellyfishLayer),
-                new PropertyMetadata(Color.FromRgb(0x3F, 0xE0, 0xCB), (d, _) => ((JellyfishLayer)d).Render()));
+                new PropertyMetadata(Color.FromRgb(0x45, 0xD8, 0xF2), (d, _) => ((JellyfishLayer)d).Render()));
 
         /// <summary>Colour the jellyfish are drawn in; follows the theme's accent.</summary>
         public Color Tint

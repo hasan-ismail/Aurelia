@@ -11,7 +11,7 @@ list of detectable games, and that list has an unrelated game called Aurelia reg
 Start Menu entry and your settings are all still Aurelia. If you had added the old name as a game
 in Discord's activity settings, you can remove it.
 
-**New theme: Jellyfish.** Aqua-teal glass with jellyfish drifting up through the volume and
+**New theme: Jellyfish.** Aqua glass with jellyfish drifting up through the volume and
 brightness sliders. They are drawn as live vector art rather than a video, so they are cheap to
 run, they follow whatever accent colour you pick, and they hold still if you have turned Windows
 animations off. The media player is left alone — album art is backdrop enough there.
