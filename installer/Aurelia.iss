@@ -162,7 +162,7 @@ end;
 procedure StopRunningCopies();
 var
   Locator, Service, Processes, Process, Path: Variant;
-  AppDir: String;
+  AppDir, ExePath: String;
   I, ResultCode: Integer;
 begin
   AppDir := Lowercase(AddBackslash(ExpandConstant('{app}')));
@@ -175,9 +175,13 @@ begin
     begin
       Process := Processes.ItemIndex(I);
       Path := Process.ExecutablePath;
+      // Null for processes Setup is not allowed to inspect, which cannot be ours.
       if not VarIsNull(Path) then
-        if Pos(AppDir, Lowercase(Path)) = 1 then
+      begin
+        ExePath := Path;
+        if Pos(AppDir, Lowercase(ExePath)) = 1 then
           Process.Terminate(0);
+      end;
     end;
   except
     // Without WMI, fall back to stopping the current program by name, as before.
